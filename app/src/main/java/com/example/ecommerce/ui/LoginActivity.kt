@@ -62,7 +62,7 @@ class LoginActivity : AppCompatActivity() {
         val user = findUserByEmailAndPassword(email, password)
         if (user != null) {
             Log.d(TAG, "Login berhasil untuk userId: ${user.id}, userName: ${user.name}")
-            sessionManager.saveLogin(user.id, user.name)
+            sessionManager.saveLogin(user.id, user.name, user.email)
             Log.d(TAG, "SessionManager.saveLogin() sudah dipanggil")
             navigateToHome()
         } else {
@@ -76,7 +76,11 @@ class LoginActivity : AppCompatActivity() {
         Log.d(TAG, "Menjalankan query login ke tabel ${DatabaseHelper.TABLE_USERS}")
         val cursor = database.query(
             DatabaseHelper.TABLE_USERS,
-            arrayOf(DatabaseHelper.COLUMN_ID, DatabaseHelper.COLUMN_USER_NAME),
+            arrayOf(
+                DatabaseHelper.COLUMN_ID,
+                DatabaseHelper.COLUMN_USER_NAME,
+                DatabaseHelper.COLUMN_USER_EMAIL
+            ),
             "${DatabaseHelper.COLUMN_USER_EMAIL} = ? AND ${DatabaseHelper.COLUMN_USER_PASSWORD} = ?",
             arrayOf(email, password),
             null,
@@ -90,9 +94,11 @@ class LoginActivity : AppCompatActivity() {
             if (it.moveToFirst()) {
                 val idIndex = it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID)
                 val nameIndex = it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USER_NAME)
+                val emailIndex = it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USER_EMAIL)
                 return LoggedInUser(
                     id = it.getInt(idIndex),
-                    name = it.getString(nameIndex)
+                    name = it.getString(nameIndex),
+                    email = it.getString(emailIndex)
                 )
             }
         }
@@ -114,13 +120,14 @@ class LoginActivity : AppCompatActivity() {
 
     private fun navigateToHome() {
         Toast.makeText(this, "Login berhasil", Toast.LENGTH_LONG).show()
-        Log.d(TAG, "HomeActivity belum tersedia, tetap berada di LoginActivity")
-        // TODO: Arahkan ke HomeActivity setelah HomeActivity dibuat.
+        startActivity(Intent(this, HomeActivity::class.java))
+        finish()
     }
 
     private data class LoggedInUser(
         val id: Int,
-        val name: String
+        val name: String,
+        val email: String
     )
 
     companion object {
