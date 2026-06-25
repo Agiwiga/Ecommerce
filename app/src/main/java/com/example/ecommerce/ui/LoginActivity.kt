@@ -1,5 +1,6 @@
 package com.example.ecommerce.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -15,6 +16,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var emailEditText: EditText
     private lateinit var passwordEditText: EditText
     private lateinit var loginButton: Button
+    private lateinit var registerButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,9 +28,14 @@ class LoginActivity : AppCompatActivity() {
         emailEditText = findViewById(R.id.editTextEmail)
         passwordEditText = findViewById(R.id.editTextPassword)
         loginButton = findViewById(R.id.buttonLogin)
+        registerButton = findViewById(R.id.buttonOpenRegister)
 
         loginButton.setOnClickListener {
             handleLogin()
+        }
+
+        registerButton.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
     }
 
@@ -83,6 +90,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun navigateToHome() {
+        Toast.makeText(
+            this,
+            "Login berhasil, tetapi HomeActivity belum tersedia",
+            Toast.LENGTH_SHORT
+        ).show()
         // TODO: Arahkan ke HomeActivity setelah HomeActivity dibuat.
     }
 
