@@ -1,6 +1,6 @@
 package com.example.ecommerce.model
 
-data class CartItem(
+data class gitCartItem(
     val id: Int = 0,
     val userId: Int,
     val productId: Int,

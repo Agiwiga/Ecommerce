@@ -2,6 +2,7 @@ package com.example.ecommerce.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -31,6 +32,7 @@ class LoginActivity : AppCompatActivity() {
         registerButton = findViewById(R.id.buttonOpenRegister)
 
         loginButton.setOnClickListener {
+            Log.d(TAG, "Tombol Login ditekan")
             handleLogin()
         }
 
@@ -42,28 +44,36 @@ class LoginActivity : AppCompatActivity() {
     private fun handleLogin() {
         val email = emailEditText.text.toString().trim()
         val password = passwordEditText.text.toString().trim()
+        Log.d(TAG, "Mulai proses login untuk email: $email")
 
         if (email.isEmpty()) {
+            Log.d(TAG, "Login dibatalkan: email kosong")
             emailEditText.error = "Email tidak boleh kosong"
             return
         }
 
         if (password.isEmpty()) {
+            Log.d(TAG, "Login dibatalkan: password kosong")
             passwordEditText.error = "Password tidak boleh kosong"
             return
         }
 
+        Log.d(TAG, "Jumlah user di database: ${countUsers()}")
         val user = findUserByEmailAndPassword(email, password)
         if (user != null) {
+            Log.d(TAG, "Login berhasil untuk userId: ${user.id}, userName: ${user.name}")
             sessionManager.saveLogin(user.id, user.name)
+            Log.d(TAG, "SessionManager.saveLogin() sudah dipanggil")
             navigateToHome()
         } else {
+            Log.d(TAG, "Login gagal: email atau password tidak cocok")
             Toast.makeText(this, "Email atau Password salah", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun findUserByEmailAndPassword(email: String, password: String): LoggedInUser? {
         val database = databaseHelper.readableDatabase
+        Log.d(TAG, "Menjalankan query login ke tabel ${DatabaseHelper.TABLE_USERS}")
         val cursor = database.query(
             DatabaseHelper.TABLE_USERS,
             arrayOf(DatabaseHelper.COLUMN_ID, DatabaseHelper.COLUMN_USER_NAME),
@@ -76,6 +86,7 @@ class LoginActivity : AppCompatActivity() {
         )
 
         cursor.use {
+            Log.d(TAG, "Hasil query login ditemukan: ${it.count} baris")
             if (it.moveToFirst()) {
                 val idIndex = it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID)
                 val nameIndex = it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USER_NAME)
@@ -89,12 +100,21 @@ class LoginActivity : AppCompatActivity() {
         return null
     }
 
+    private fun countUsers(): Int {
+        val database = databaseHelper.readableDatabase
+        val cursor = database.rawQuery(
+            "SELECT COUNT(*) FROM ${DatabaseHelper.TABLE_USERS}",
+            null
+        )
+
+        cursor.use {
+            return if (it.moveToFirst()) it.getInt(0) else 0
+        }
+    }
+
     private fun navigateToHome() {
-        Toast.makeText(
-            this,
-            "Login berhasil, tetapi HomeActivity belum tersedia",
-            Toast.LENGTH_SHORT
-        ).show()
+        Toast.makeText(this, "Login berhasil", Toast.LENGTH_LONG).show()
+        Log.d(TAG, "HomeActivity belum tersedia, tetap berada di LoginActivity")
         // TODO: Arahkan ke HomeActivity setelah HomeActivity dibuat.
     }
 
@@ -102,4 +122,8 @@ class LoginActivity : AppCompatActivity() {
         val id: Int,
         val name: String
     )
+
+    companion object {
+        private const val TAG = "LoginActivity"
+    }
 }
