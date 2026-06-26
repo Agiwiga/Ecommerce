@@ -51,9 +51,3 @@ Aplikasi e-commerce sederhana berbasis Android Native menggunakan Kotlin.
 - RecyclerView daftar produk
 - Tombol Tambah Produk (sementara)
 - Toast saat memilih produk
-
----
-
-## Status Project
-
-🚧 Masih dalam tahap pengembangan.
