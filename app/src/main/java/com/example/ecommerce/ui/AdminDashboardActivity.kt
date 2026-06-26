@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.ecommerce.R
 import com.example.ecommerce.session.SessionManager
@@ -31,7 +30,7 @@ class AdminDashboardActivity : AppCompatActivity() {
         }
 
         manageProductsButton.setOnClickListener {
-            Toast.makeText(this, "Fitur Kelola Produk belum tersedia", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, ProductManagementActivity::class.java))
         }
     }
 

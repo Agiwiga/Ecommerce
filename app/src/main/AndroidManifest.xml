@@ -18,6 +18,9 @@
             android:name=".ui.AdminDashboardActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.ProductManagementActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.HomeActivity"
             android:exported="false" />
         <activity
