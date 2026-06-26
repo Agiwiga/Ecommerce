@@ -61,10 +61,13 @@ class LoginActivity : AppCompatActivity() {
         Log.d(TAG, "Jumlah user di database: ${countUsers()}")
         val user = findUserByEmailAndPassword(email, password)
         if (user != null) {
-            Log.d(TAG, "Login berhasil untuk userId: ${user.id}, userName: ${user.name}")
-            sessionManager.saveLogin(user.id, user.name, user.email)
+            Log.d(
+                TAG,
+                "Login berhasil untuk userId: ${user.id}, userName: ${user.name}, role: ${user.role}"
+            )
+            sessionManager.saveLogin(user.id, user.name, user.email, user.role)
             Log.d(TAG, "SessionManager.saveLogin() sudah dipanggil")
-            navigateToHome()
+            handleLoginSuccess(user)
         } else {
             Log.d(TAG, "Login gagal: email atau password tidak cocok")
             Toast.makeText(this, "Email atau Password salah", Toast.LENGTH_SHORT).show()
@@ -79,7 +82,8 @@ class LoginActivity : AppCompatActivity() {
             arrayOf(
                 DatabaseHelper.COLUMN_ID,
                 DatabaseHelper.COLUMN_USER_NAME,
-                DatabaseHelper.COLUMN_USER_EMAIL
+                DatabaseHelper.COLUMN_USER_EMAIL,
+                DatabaseHelper.COLUMN_USER_ROLE
             ),
             "${DatabaseHelper.COLUMN_USER_EMAIL} = ? AND ${DatabaseHelper.COLUMN_USER_PASSWORD} = ?",
             arrayOf(email, password),
@@ -95,10 +99,12 @@ class LoginActivity : AppCompatActivity() {
                 val idIndex = it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID)
                 val nameIndex = it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USER_NAME)
                 val emailIndex = it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USER_EMAIL)
+                val roleIndex = it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USER_ROLE)
                 return LoggedInUser(
                     id = it.getInt(idIndex),
                     name = it.getString(nameIndex),
-                    email = it.getString(emailIndex)
+                    email = it.getString(emailIndex),
+                    role = it.getString(roleIndex)
                 )
             }
         }
@@ -118,6 +124,16 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun handleLoginSuccess(user: LoggedInUser) {
+        if (user.role == DatabaseHelper.ROLE_ADMIN) {
+            Toast.makeText(this, "Login sebagai Admin", Toast.LENGTH_LONG).show()
+            Log.d(TAG, "AdminDashboard belum dibuat, tetap berada di LoginActivity")
+            return
+        }
+
+        navigateToHome()
+    }
+
     private fun navigateToHome() {
         Toast.makeText(this, "Login berhasil", Toast.LENGTH_LONG).show()
         startActivity(Intent(this, HomeActivity::class.java))
@@ -127,7 +143,8 @@ class LoginActivity : AppCompatActivity() {
     private data class LoggedInUser(
         val id: Int,
         val name: String,
-        val email: String
+        val email: String,
+        val role: String
     )
 
     companion object {

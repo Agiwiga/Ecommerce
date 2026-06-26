@@ -9,12 +9,13 @@ class SessionManager(context: Context) {
         Context.MODE_PRIVATE
     )
 
-    fun saveLogin(userId: Int, userName: String, userEmail: String = "") {
+    fun saveLogin(userId: Int, userName: String, userEmail: String = "", userRole: String = "") {
         preferences.edit()
             .putBoolean(KEY_IS_LOGGED_IN, true)
             .putInt(KEY_USER_ID, userId)
             .putString(KEY_USER_NAME, userName)
             .putString(KEY_USER_EMAIL, userEmail)
+            .putString(KEY_USER_ROLE, userRole)
             .apply()
     }
 
@@ -34,6 +35,10 @@ class SessionManager(context: Context) {
         return preferences.getString(KEY_USER_EMAIL, "") ?: ""
     }
 
+    fun getUserRole(): String {
+        return preferences.getString(KEY_USER_ROLE, "") ?: ""
+    }
+
     fun logout() {
         preferences.edit()
             .clear()
@@ -46,5 +51,6 @@ class SessionManager(context: Context) {
         private const val KEY_USER_ID = "user_id"
         private const val KEY_USER_NAME = "user_name"
         private const val KEY_USER_EMAIL = "user_email"
+        private const val KEY_USER_ROLE = "user_role"
     }
 }

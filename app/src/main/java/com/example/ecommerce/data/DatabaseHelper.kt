@@ -16,15 +16,27 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         db.execSQL(CREATE_PRODUCTS_TABLE)
         db.execSQL(CREATE_CART_TABLE)
         db.execSQL(CREATE_ORDERS_TABLE)
+        insertDefaultAdmin(db)
         insertSampleProducts(db)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_ORDERS")
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_CART")
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_PRODUCTS")
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_USERS")
-        onCreate(db)
+        if (oldVersion < 2) {
+            db.execSQL(
+                "ALTER TABLE $TABLE_USERS ADD COLUMN $COLUMN_USER_ROLE TEXT NOT NULL DEFAULT '$ROLE_CUSTOMER'"
+            )
+            insertDefaultAdmin(db)
+        }
+    }
+
+    private fun insertDefaultAdmin(db: SQLiteDatabase) {
+        val values = ContentValues().apply {
+            put(COLUMN_USER_NAME, "Admin")
+            put(COLUMN_USER_EMAIL, "admin@gmail.com")
+            put(COLUMN_USER_PASSWORD, "admin123")
+            put(COLUMN_USER_ROLE, ROLE_ADMIN)
+        }
+        db.insertWithOnConflict(TABLE_USERS, null, values, SQLiteDatabase.CONFLICT_IGNORE)
     }
 
     private fun insertSampleProducts(db: SQLiteDatabase) {
@@ -76,7 +88,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
 
     companion object {
         private const val DATABASE_NAME = "ecommerce.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
 
         const val TABLE_USERS = "users"
         const val TABLE_PRODUCTS = "products"
@@ -88,6 +100,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         const val COLUMN_USER_NAME = "name"
         const val COLUMN_USER_EMAIL = "email"
         const val COLUMN_USER_PASSWORD = "password"
+        const val COLUMN_USER_ROLE = "role"
+
+        const val ROLE_ADMIN = "admin"
+        const val ROLE_CUSTOMER = "customer"
 
         const val COLUMN_PRODUCT_NAME = "name"
         const val COLUMN_PRODUCT_DESCRIPTION = "description"
@@ -109,7 +125,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
                 $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 $COLUMN_USER_NAME TEXT NOT NULL,
                 $COLUMN_USER_EMAIL TEXT NOT NULL UNIQUE,
-                $COLUMN_USER_PASSWORD TEXT NOT NULL
+                $COLUMN_USER_PASSWORD TEXT NOT NULL,
+                $COLUMN_USER_ROLE TEXT NOT NULL
             )
         """
 

@@ -101,6 +101,7 @@ class RegisterActivity : AppCompatActivity() {
             put(DatabaseHelper.COLUMN_USER_NAME, name)
             put(DatabaseHelper.COLUMN_USER_EMAIL, email)
             put(DatabaseHelper.COLUMN_USER_PASSWORD, password)
+            put(DatabaseHelper.COLUMN_USER_ROLE, DatabaseHelper.ROLE_CUSTOMER)
         }
 
         val result = databaseHelper.writableDatabase.insert(
