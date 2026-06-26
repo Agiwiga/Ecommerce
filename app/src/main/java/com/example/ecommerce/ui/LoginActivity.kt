@@ -127,7 +127,8 @@ class LoginActivity : AppCompatActivity() {
     private fun handleLoginSuccess(user: LoggedInUser) {
         if (user.role == DatabaseHelper.ROLE_ADMIN) {
             Toast.makeText(this, "Login sebagai Admin", Toast.LENGTH_LONG).show()
-            Log.d(TAG, "AdminDashboard belum dibuat, tetap berada di LoginActivity")
+            startActivity(Intent(this, AdminDashboardActivity::class.java))
+            finish()
             return
         }
 
