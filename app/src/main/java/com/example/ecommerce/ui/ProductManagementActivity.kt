@@ -3,6 +3,8 @@ package com.example.ecommerce.ui
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,12 +37,46 @@ class ProductManagementActivity : AppCompatActivity() {
     }
 
     private fun showProducts() {
-        val adapter = AdminProductAdapter(getProducts()) { product ->
-            openEditProduct(product)
-        }
+        val adapter = AdminProductAdapter(
+            products = getProducts(),
+            onProductClick = { product ->
+                openEditProduct(product)
+            },
+            onDeleteClick = { product ->
+                showDeleteConfirmation(product)
+            }
+        )
 
         productsRecyclerView.layoutManager = LinearLayoutManager(this)
         productsRecyclerView.adapter = adapter
+    }
+
+    private fun showDeleteConfirmation(product: Product) {
+        AlertDialog.Builder(this)
+            .setMessage("Apakah Anda yakin ingin menghapus produk ini?")
+            .setPositiveButton("Ya") { dialog, _ ->
+                deleteProduct(product)
+                dialog.dismiss()
+            }
+            .setNegativeButton("Batal") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun deleteProduct(product: Product) {
+        val deletedRows = databaseHelper.writableDatabase.delete(
+            DatabaseHelper.TABLE_PRODUCTS,
+            "${DatabaseHelper.COLUMN_ID} = ?",
+            arrayOf(product.id.toString())
+        )
+
+        if (deletedRows > 0) {
+            Toast.makeText(this, "Produk berhasil dihapus", Toast.LENGTH_SHORT).show()
+            showProducts()
+        } else {
+            Toast.makeText(this, "Produk gagal dihapus", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun openEditProduct(product: Product) {
