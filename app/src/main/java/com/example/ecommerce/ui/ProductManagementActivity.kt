@@ -3,7 +3,6 @@ package com.example.ecommerce.ui
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,11 +36,21 @@ class ProductManagementActivity : AppCompatActivity() {
 
     private fun showProducts() {
         val adapter = AdminProductAdapter(getProducts()) { product ->
-            Toast.makeText(this, product.name, Toast.LENGTH_SHORT).show()
+            openEditProduct(product)
         }
 
         productsRecyclerView.layoutManager = LinearLayoutManager(this)
         productsRecyclerView.adapter = adapter
+    }
+
+    private fun openEditProduct(product: Product) {
+        val intent = Intent(this, EditProductActivity::class.java).apply {
+            putExtra(EditProductActivity.EXTRA_PRODUCT_ID, product.id)
+            putExtra(EditProductActivity.EXTRA_PRODUCT_NAME, product.name)
+            putExtra(EditProductActivity.EXTRA_PRODUCT_PRICE, product.price)
+            putExtra(EditProductActivity.EXTRA_PRODUCT_DESCRIPTION, product.description)
+        }
+        startActivity(intent)
     }
 
     private fun getProducts(): List<Product> {
