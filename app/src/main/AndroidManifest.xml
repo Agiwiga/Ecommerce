@@ -21,6 +21,9 @@
             android:name=".ui.ProductManagementActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.AddProductActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.HomeActivity"
             android:exported="false" />
         <activity

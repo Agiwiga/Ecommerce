@@ -1,5 +1,6 @@
 package com.example.ecommerce.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
@@ -24,12 +25,14 @@ class ProductManagementActivity : AppCompatActivity() {
         productsRecyclerView = findViewById(R.id.recyclerViewAdminProducts)
         addProductButton = findViewById(R.id.buttonAddProduct)
 
-        showProducts()
-
         addProductButton.setOnClickListener {
-            Toast.makeText(this, "Fitur akan dibuat pada tahap berikutnya", Toast.LENGTH_SHORT)
-                .show()
+            startActivity(Intent(this, AddProductActivity::class.java))
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        showProducts()
     }
 
     private fun showProducts() {
