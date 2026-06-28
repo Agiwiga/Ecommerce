@@ -22,10 +22,24 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         if (oldVersion < 2) {
+
             db.execSQL(
                 "ALTER TABLE $TABLE_USERS ADD COLUMN $COLUMN_USER_ROLE TEXT NOT NULL DEFAULT '$ROLE_CUSTOMER'"
             )
             insertDefaultAdmin(db)
+        }
+        if (oldVersion < 3) {
+            db.execSQL(
+                "ALTER TABLE $TABLE_PRODUCTS ADD COLUMN $COLUMN_PRODUCT_CATEGORY TEXT NOT NULL DEFAULT 'Pakan'"
+            )
+
+            db.execSQL(
+                "ALTER TABLE $TABLE_PRODUCTS ADD COLUMN $COLUMN_PRODUCT_SALE_TYPE TEXT NOT NULL DEFAULT 'weight'"
+            )
+
+            db.execSQL(
+                "ALTER TABLE $TABLE_PRODUCTS ADD COLUMN $COLUMN_PRODUCT_PACKAGE_QUANTITY REAL NOT NULL DEFAULT 50"
+            )
         }
     }
 
@@ -88,7 +102,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
 
     companion object {
         private const val DATABASE_NAME = "ecommerce.db"
-        private const val DATABASE_VERSION = 2
+        private const val DATABASE_VERSION = 3
 
         const val TABLE_USERS = "users"
         const val TABLE_PRODUCTS = "products"
@@ -110,7 +124,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         const val COLUMN_PRODUCT_PRICE = "price"
         const val COLUMN_PRODUCT_IMAGE_URL = "image_url"
         const val COLUMN_PRODUCT_STOCK = "stock"
-
+        const val COLUMN_PRODUCT_CATEGORY = "category"
+        const val COLUMN_PRODUCT_SALE_TYPE = "sale_type"
+        const val COLUMN_PRODUCT_PACKAGE_QUANTITY = "package_quantity"
         const val COLUMN_CART_USER_ID = "user_id"
         const val COLUMN_CART_PRODUCT_ID = "product_id"
         const val COLUMN_CART_QUANTITY = "quantity"
@@ -137,7 +153,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
                 $COLUMN_PRODUCT_DESCRIPTION TEXT NOT NULL,
                 $COLUMN_PRODUCT_PRICE REAL NOT NULL,
                 $COLUMN_PRODUCT_IMAGE_URL TEXT,
-                $COLUMN_PRODUCT_STOCK INTEGER NOT NULL
+                $COLUMN_PRODUCT_STOCK INTEGER NOT NULL,
+                $COLUMN_PRODUCT_CATEGORY TEXT NOT NULL,
+                $COLUMN_PRODUCT_SALE_TYPE TEXT NOT NULL,
+                $COLUMN_PRODUCT_PACKAGE_QUANTITY REAL NOT NULL
             )
         """
 

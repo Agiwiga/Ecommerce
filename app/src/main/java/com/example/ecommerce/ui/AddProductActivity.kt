@@ -8,12 +8,17 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.ecommerce.R
 import com.example.ecommerce.data.DatabaseHelper
-
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 class AddProductActivity : AppCompatActivity() {
     private lateinit var databaseHelper: DatabaseHelper
     private lateinit var productNameEditText: EditText
     private lateinit var productPriceEditText: EditText
     private lateinit var productDescriptionEditText: EditText
+    private lateinit var categorySpinner: Spinner
+    private lateinit var saleTypeSpinner: Spinner
+    private lateinit var packageQuantityEditText: EditText
+    private lateinit var stockEditText: EditText
     private lateinit var saveButton: Button
     private lateinit var cancelButton: Button
 
@@ -25,8 +30,28 @@ class AddProductActivity : AppCompatActivity() {
         productNameEditText = findViewById(R.id.editTextProductName)
         productPriceEditText = findViewById(R.id.editTextProductPrice)
         productDescriptionEditText = findViewById(R.id.editTextProductDescription)
+        categorySpinner = findViewById(R.id.spinnerCategory)
+        saleTypeSpinner = findViewById(R.id.spinnerSaleType)
+        packageQuantityEditText = findViewById(R.id.editTextPackageQuantity)
+        stockEditText = findViewById(R.id.editTextProductStock)
         saveButton = findViewById(R.id.buttonSaveProduct)
         cancelButton = findViewById(R.id.buttonCancelProduct)
+
+        val categories = listOf("Pakan", "Vitamin", "Obat", "Peralatan")
+
+        categorySpinner.adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            categories
+        )
+
+        val saleTypes = listOf("Berat", "Satuan")
+
+        saleTypeSpinner.adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            saleTypes
+        )
 
         saveButton.setOnClickListener {
             saveProduct()
@@ -41,19 +66,40 @@ class AddProductActivity : AppCompatActivity() {
         val name = productNameEditText.text.toString().trim()
         val priceText = productPriceEditText.text.toString().trim()
         val description = productDescriptionEditText.text.toString().trim()
+        val category = categorySpinner.selectedItem.toString()
+        val saleType = saleTypeSpinner.selectedItem.toString()
+        val packageQuantityText = packageQuantityEditText.text.toString().trim()
+        val stockText = stockEditText.text.toString().trim()
 
         if (name.isEmpty()) {
             productNameEditText.error = "Nama produk wajib diisi"
             return
         }
-
         if (priceText.isEmpty()) {
             productPriceEditText.error = "Harga wajib diisi"
             return
         }
-
         if (description.isEmpty()) {
             productDescriptionEditText.error = "Deskripsi wajib diisi"
+            return
+        }
+        if (packageQuantityText.isEmpty()) {
+            packageQuantityEditText.error = "Isi kemasan wajib diisi"
+            return
+        }
+        if (stockText.isEmpty()) {
+            stockEditText.error = "Stok wajib diisi"
+            return
+        }
+
+        val packageQuantity = packageQuantityText.toDoubleOrNull()
+        if (packageQuantity == null || packageQuantity <= 0) {
+            packageQuantityEditText.error = "Isi kemasan tidak valid"
+            return
+        }
+        val stock = stockText.toDoubleOrNull()
+        if (stock == null || stock < 0) {
+            stockEditText.error = "Stok tidak valid"
             return
         }
 
@@ -68,7 +114,10 @@ class AddProductActivity : AppCompatActivity() {
             put(DatabaseHelper.COLUMN_PRODUCT_PRICE, price)
             put(DatabaseHelper.COLUMN_PRODUCT_DESCRIPTION, description)
             put(DatabaseHelper.COLUMN_PRODUCT_IMAGE_URL, "")
-            put(DatabaseHelper.COLUMN_PRODUCT_STOCK, 0)
+            put(DatabaseHelper.COLUMN_PRODUCT_STOCK, stock)
+            put(DatabaseHelper.COLUMN_PRODUCT_CATEGORY, category)
+            put(DatabaseHelper.COLUMN_PRODUCT_SALE_TYPE, saleType)
+            put(DatabaseHelper.COLUMN_PRODUCT_PACKAGE_QUANTITY, packageQuantity)
         }
 
         val result = databaseHelper.writableDatabase.insert(

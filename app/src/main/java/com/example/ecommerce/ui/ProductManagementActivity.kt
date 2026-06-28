@@ -100,7 +100,10 @@ class ProductManagementActivity : AppCompatActivity() {
                 DatabaseHelper.COLUMN_PRODUCT_DESCRIPTION,
                 DatabaseHelper.COLUMN_PRODUCT_PRICE,
                 DatabaseHelper.COLUMN_PRODUCT_IMAGE_URL,
-                DatabaseHelper.COLUMN_PRODUCT_STOCK
+                DatabaseHelper.COLUMN_PRODUCT_STOCK,
+                DatabaseHelper.COLUMN_PRODUCT_CATEGORY,
+                DatabaseHelper.COLUMN_PRODUCT_SALE_TYPE,
+                DatabaseHelper.COLUMN_PRODUCT_PACKAGE_QUANTITY
             ),
             null,
             null,
@@ -119,6 +122,12 @@ class ProductManagementActivity : AppCompatActivity() {
                 val imageUrlIndex =
                     it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PRODUCT_IMAGE_URL)
                 val stockIndex = it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PRODUCT_STOCK)
+                val categoryIndex =
+                    it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PRODUCT_CATEGORY)
+                val saleTypeIndex =
+                    it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PRODUCT_SALE_TYPE)
+                val packageQuantityIndex =
+                    it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PRODUCT_PACKAGE_QUANTITY)
 
                 products.add(
                     Product(
@@ -127,7 +136,10 @@ class ProductManagementActivity : AppCompatActivity() {
                         description = it.getString(descriptionIndex),
                         price = it.getDouble(priceIndex),
                         imageUrl = it.getString(imageUrlIndex) ?: "",
-                        stock = it.getInt(stockIndex)
+                        stock = it.getDouble(stockIndex),
+                        category = it.getString(categoryIndex),
+                        saleType = it.getString(saleTypeIndex),
+                        packageQuantity = it.getDouble(packageQuantityIndex)
                     )
                 )
             }
