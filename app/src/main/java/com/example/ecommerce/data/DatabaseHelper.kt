@@ -47,7 +47,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         val values = ContentValues().apply {
             put(COLUMN_USER_NAME, "Admin")
             put(COLUMN_USER_EMAIL, "admin@gmail.com")
-            put(COLUMN_USER_PASSWORD, "admin123")
+            put(COLUMN_USER_PASSWORD, "123")
             put(COLUMN_USER_ROLE, ROLE_ADMIN)
         }
         db.insertWithOnConflict(TABLE_USERS, null, values, SQLiteDatabase.CONFLICT_IGNORE)

@@ -10,6 +10,8 @@ import com.example.ecommerce.R
 import com.example.ecommerce.data.DatabaseHelper
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.AdapterView
+
 class AddProductActivity : AppCompatActivity() {
     private lateinit var databaseHelper: DatabaseHelper
     private lateinit var productNameEditText: EditText
@@ -53,12 +55,38 @@ class AddProductActivity : AppCompatActivity() {
             saleTypes
         )
 
+        saleTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: android.view.View?,
+                position: Int,
+                id: Long
+            ) {
+                updateInputHints(saleTypeSpinner.selectedItem.toString())
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
         saveButton.setOnClickListener {
             saveProduct()
         }
 
         cancelButton.setOnClickListener {
             finish()
+        }
+    }
+
+    private fun updateInputHints(saleType: String) {
+        if (saleType == "Berat") {
+            productPriceEditText.hint = "Harga per Kg"
+            packageQuantityEditText.hint = "Isi Karung (Kg)"
+            stockEditText.hint = "Stok (Karung)"
+        } else {
+            productPriceEditText.hint = "Harga per Pcs"
+            packageQuantityEditText.hint = "Isi Pack (Pcs)"
+            stockEditText.hint = "Stok (Pack)"
         }
     }
 

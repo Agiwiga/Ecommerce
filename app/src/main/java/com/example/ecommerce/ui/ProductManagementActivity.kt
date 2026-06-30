@@ -85,6 +85,10 @@ class ProductManagementActivity : AppCompatActivity() {
             putExtra(EditProductActivity.EXTRA_PRODUCT_NAME, product.name)
             putExtra(EditProductActivity.EXTRA_PRODUCT_PRICE, product.price)
             putExtra(EditProductActivity.EXTRA_PRODUCT_DESCRIPTION, product.description)
+            putExtra(EditProductActivity.EXTRA_PRODUCT_CATEGORY, product.category)
+            putExtra(EditProductActivity.EXTRA_PRODUCT_SALE_TYPE, product.saleType)
+            putExtra(EditProductActivity.EXTRA_PRODUCT_PACKAGE_QUANTITY, product.packageQuantity)
+            putExtra(EditProductActivity.EXTRA_PRODUCT_STOCK, product.stock)
         }
         startActivity(intent)
     }
