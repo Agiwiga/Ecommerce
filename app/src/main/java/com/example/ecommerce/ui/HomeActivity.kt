@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -55,11 +54,24 @@ class HomeActivity : AppCompatActivity() {
     private fun showProducts() {
         val products = getProducts()
         val productAdapter = ProductAdapter(products) { product ->
-            Toast.makeText(this, product.name, Toast.LENGTH_SHORT).show()
+            openProductDetail(product)
         }
 
         productsRecyclerView.layoutManager = LinearLayoutManager(this)
         productsRecyclerView.adapter = productAdapter
+    }
+
+    private fun openProductDetail(product: Product) {
+        val intent = Intent(this, ProductDetailActivity::class.java).apply {
+            putExtra(ProductDetailActivity.EXTRA_PRODUCT_NAME, product.name)
+            putExtra(ProductDetailActivity.EXTRA_PRODUCT_DESCRIPTION, product.description)
+            putExtra(ProductDetailActivity.EXTRA_PRODUCT_CATEGORY, product.category)
+            putExtra(ProductDetailActivity.EXTRA_PRODUCT_SALE_TYPE, product.saleType)
+            putExtra(ProductDetailActivity.EXTRA_PRODUCT_PRICE, product.price)
+            putExtra(ProductDetailActivity.EXTRA_PRODUCT_PACKAGE_QUANTITY, product.packageQuantity)
+            putExtra(ProductDetailActivity.EXTRA_PRODUCT_STOCK, product.stock)
+        }
+        startActivity(intent)
     }
 
     private fun getProducts(): List<Product> {
