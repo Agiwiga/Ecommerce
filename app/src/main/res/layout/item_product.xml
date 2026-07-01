@@ -23,6 +23,27 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/textViewProductCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/textViewProductUnit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/textViewProductStock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textSize="14sp" />
+
+    <TextView
         android:id="@+id/textViewProductDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
