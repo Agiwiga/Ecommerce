@@ -3,6 +3,7 @@ package com.example.ecommerce.ui
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -260,6 +261,10 @@ class ProductDetailActivity : AppCompatActivity() {
         }
 
         val saved = if (cartId > 0) {
+            Log.d(
+                TAG,
+                "Update cart cartId=$cartId, productId=$productId, type=${getPurchaseTypeValue()}, input=${getCurrentInputQuantity()}, actual=${result.actualQuantity}, total=${result.totalPrice}"
+            )
             cartRepository.updateCartItem(
                 cartId = cartId,
                 purchaseType = getPurchaseTypeValue(),
@@ -268,6 +273,10 @@ class ProductDetailActivity : AppCompatActivity() {
                 totalPrice = result.totalPrice
             )
         } else {
+            Log.d(
+                TAG,
+                "Tambah cart userId=$userId, productId=$productId, type=${getPurchaseTypeValue()}, input=${getCurrentInputQuantity()}, actual=${result.actualQuantity}, total=${result.totalPrice}"
+            )
             cartRepository.addToCart(
                 userId = userId,
                 productId = productId,
@@ -448,5 +457,6 @@ class ProductDetailActivity : AppCompatActivity() {
         const val EXTRA_INPUT_QUANTITY = "extra_input_quantity"
 
         private const val SALE_TYPE_WEIGHT = "Berat"
+        private const val TAG = "ProductDetailActivity"
     }
 }

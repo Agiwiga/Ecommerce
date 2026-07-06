@@ -2,6 +2,7 @@ package com.example.ecommerce.data
 
 import android.content.ContentValues
 import android.content.Context
+import android.util.Log
 import com.example.ecommerce.model.Cart
 import com.example.ecommerce.model.Product
 
@@ -16,6 +17,10 @@ class CartRepository(context: Context) {
         actualQuantity: Double,
         totalPrice: Double
     ): Boolean {
+        Log.d(
+            TAG,
+            "addToCart userId=$userId, productId=$productId, purchaseType=$purchaseType, input=$inputQuantity, actual=$actualQuantity, total=$totalPrice"
+        )
         val values = ContentValues().apply {
             put(DatabaseHelper.COLUMN_CART_USER_ID, userId)
             put(DatabaseHelper.COLUMN_CART_PRODUCT_ID, productId)
@@ -27,11 +32,13 @@ class CartRepository(context: Context) {
             put(DatabaseHelper.COLUMN_CART_TOTAL_PRICE, totalPrice)
         }
 
-        return databaseHelper.writableDatabase.insert(
+        val result = databaseHelper.writableDatabase.insert(
             DatabaseHelper.TABLE_CART,
             null,
             values
-        ) != -1L
+        )
+        Log.d(TAG, "addToCart insert result=$result")
+        return result != -1L
     }
 
     fun getCartItems(userId: Int): List<Cart> {
@@ -120,6 +127,14 @@ class CartRepository(context: Context) {
             }
         }
 
+        Log.d(TAG, "getCartItems userId=$userId menghasilkan ${cartItems.size} item")
+        cartItems.forEach { item ->
+            Log.d(
+                TAG,
+                "Cart id=${item.id}, productId=${item.productId}, purchaseType=${item.purchaseType}, input=${item.inputQuantity}, actual=${item.actualQuantity}, total=${item.totalPrice}, productStock=${item.product?.stock}"
+            )
+        }
+
         return cartItems
     }
 
@@ -147,12 +162,18 @@ class CartRepository(context: Context) {
             put(DatabaseHelper.COLUMN_CART_TOTAL_PRICE, totalPrice)
         }
 
-        return databaseHelper.writableDatabase.update(
+        Log.d(
+            TAG,
+            "updateCartItem cartId=$cartId, purchaseType=$purchaseType, input=$inputQuantity, actual=$actualQuantity, total=$totalPrice"
+        )
+        val updatedRows = databaseHelper.writableDatabase.update(
             DatabaseHelper.TABLE_CART,
             values,
             "${DatabaseHelper.COLUMN_ID} = ?",
             arrayOf(cartId.toString())
-        ) > 0
+        )
+        Log.d(TAG, "updateCartItem rows=$updatedRows")
+        return updatedRows > 0
     }
 
     fun clearCart(userId: Int): Boolean {
@@ -162,5 +183,9 @@ class CartRepository(context: Context) {
             arrayOf(userId.toString())
         )
         return true
+    }
+
+    companion object {
+        private const val TAG = "CartRepository"
     }
 }

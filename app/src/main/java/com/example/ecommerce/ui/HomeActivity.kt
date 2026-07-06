@@ -46,6 +46,11 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        showProducts()
+    }
+
     private fun showLoggedInUser() {
         userNameTextView.text = sessionManager.getUserName()
 
