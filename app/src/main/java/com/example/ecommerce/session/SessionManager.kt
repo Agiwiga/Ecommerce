@@ -8,7 +8,6 @@ class SessionManager(context: Context) {
         PREF_NAME,
         Context.MODE_PRIVATE
     )
-
     fun saveLogin(userId: Int, userName: String, userEmail: String = "", userRole: String = "") {
         preferences.edit()
             .putBoolean(KEY_IS_LOGGED_IN, true)
@@ -18,33 +17,26 @@ class SessionManager(context: Context) {
             .putString(KEY_USER_ROLE, userRole)
             .apply()
     }
-
     fun isLoggedIn(): Boolean {
         return preferences.getBoolean(KEY_IS_LOGGED_IN, false)
     }
-
     fun getUserId(): Int {
         return preferences.getInt(KEY_USER_ID, 0)
     }
-
     fun getUserName(): String {
         return preferences.getString(KEY_USER_NAME, "") ?: ""
     }
-
     fun getUserEmail(): String {
         return preferences.getString(KEY_USER_EMAIL, "") ?: ""
     }
-
     fun getUserRole(): String {
         return preferences.getString(KEY_USER_ROLE, "") ?: ""
     }
-
     fun logout() {
         preferences.edit()
             .clear()
             .apply()
     }
-
     companion object {
         private const val PREF_NAME = "ecommerce_session"
         private const val KEY_IS_LOGGED_IN = "is_logged_in"

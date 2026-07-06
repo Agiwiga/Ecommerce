@@ -33,6 +33,12 @@
             android:name=".ui.ProductDetailActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.CartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.CheckoutActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.LoginActivity"
             android:exported="false" />
         <activity

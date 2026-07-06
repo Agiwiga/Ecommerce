@@ -16,6 +16,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         db.execSQL(CREATE_PRODUCTS_TABLE)
         db.execSQL(CREATE_CART_TABLE)
         db.execSQL(CREATE_ORDERS_TABLE)
+        db.execSQL(CREATE_ORDER_ITEMS_TABLE)
         insertDefaultAdmin(db)
         insertSampleProducts(db)
     }
@@ -41,6 +42,31 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
                 "ALTER TABLE $TABLE_PRODUCTS ADD COLUMN $COLUMN_PRODUCT_PACKAGE_QUANTITY REAL NOT NULL DEFAULT 50"
             )
         }
+        if (oldVersion < 4) {
+            db.execSQL(
+                "ALTER TABLE $TABLE_CART ADD COLUMN $COLUMN_CART_PURCHASE_TYPE TEXT NOT NULL DEFAULT 'Kg'"
+            )
+
+            db.execSQL(
+                "ALTER TABLE $TABLE_CART ADD COLUMN $COLUMN_CART_ACTUAL_WEIGHT REAL NOT NULL DEFAULT 0"
+            )
+
+            db.execSQL(
+                "ALTER TABLE $TABLE_CART ADD COLUMN $COLUMN_CART_TOTAL_PRICE REAL NOT NULL DEFAULT 0"
+            )
+        }
+        if (oldVersion < 5) {
+            db.execSQL(
+                "UPDATE $TABLE_PRODUCTS SET $COLUMN_PRODUCT_SALE_TYPE = 'Berat' WHERE $COLUMN_PRODUCT_SALE_TYPE = 'weight'"
+            )
+            db.execSQL(
+                "ALTER TABLE $TABLE_CART ADD COLUMN $COLUMN_CART_INPUT_QUANTITY REAL NOT NULL DEFAULT 0"
+            )
+            db.execSQL(
+                "ALTER TABLE $TABLE_CART ADD COLUMN $COLUMN_CART_ACTUAL_QUANTITY REAL NOT NULL DEFAULT 0"
+            )
+            db.execSQL(CREATE_ORDER_ITEMS_TABLE)
+        }
     }
 
     private fun insertDefaultAdmin(db: SQLiteDatabase) {
@@ -56,28 +82,40 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
     private fun insertSampleProducts(db: SQLiteDatabase) {
         val sampleProducts = listOf(
             SampleProduct(
-                name = "Wireless Headphone",
-                description = "Headphone Bluetooth dengan suara jernih dan baterai tahan lama.",
-                price = 249000.0,
-                stock = 15
+                name = "Pakan Ayam Layer",
+                description = "Pakan ayam petelur dengan nutrisi lengkap untuk produksi harian.",
+                price = 12000.0,
+                stock = 15.0,
+                category = "Pakan",
+                saleType = "Berat",
+                packageQuantity = 50.0
             ),
             SampleProduct(
-                name = "Smart Watch",
-                description = "Jam tangan pintar untuk aktivitas harian dan notifikasi.",
-                price = 399000.0,
-                stock = 10
+                name = "Pakan Kambing Fermentasi",
+                description = "Pakan fermentasi siap pakai untuk kambing dan domba.",
+                price = 9000.0,
+                stock = 10.0,
+                category = "Pakan",
+                saleType = "Berat",
+                packageQuantity = 25.0
             ),
             SampleProduct(
-                name = "USB-C Charger",
-                description = "Charger cepat USB-C 30W untuk ponsel dan tablet.",
-                price = 129000.0,
-                stock = 25
+                name = "Vitamin Unggas",
+                description = "Vitamin tambahan untuk menjaga daya tahan tubuh unggas.",
+                price = 2500.0,
+                stock = 25.0,
+                category = "Vitamin",
+                saleType = "Satuan",
+                packageQuantity = 12.0
             ),
             SampleProduct(
-                name = "Laptop Stand",
-                description = "Dudukan laptop aluminium yang kokoh dan mudah dilipat.",
-                price = 179000.0,
-                stock = 12
+                name = "Mineral Ternak",
+                description = "Suplemen mineral untuk sapi, kambing, dan domba.",
+                price = 3500.0,
+                stock = 12.0,
+                category = "Vitamin",
+                saleType = "Satuan",
+                packageQuantity = 10.0
             )
         )
 
@@ -88,6 +126,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
                 put(COLUMN_PRODUCT_PRICE, product.price)
                 put(COLUMN_PRODUCT_IMAGE_URL, "")
                 put(COLUMN_PRODUCT_STOCK, product.stock)
+                put(COLUMN_PRODUCT_CATEGORY, product.category)
+                put(COLUMN_PRODUCT_SALE_TYPE, product.saleType)
+                put(COLUMN_PRODUCT_PACKAGE_QUANTITY, product.packageQuantity)
             }
             db.insert(TABLE_PRODUCTS, null, values)
         }
@@ -97,12 +138,15 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         val name: String,
         val description: String,
         val price: Double,
-        val stock: Int
+        val stock: Double,
+        val category: String,
+        val saleType: String,
+        val packageQuantity: Double
     )
 
     companion object {
         private const val DATABASE_NAME = "ecommerce.db"
-        private const val DATABASE_VERSION = 3
+        private const val DATABASE_VERSION = 5
 
         const val TABLE_USERS = "users"
         const val TABLE_PRODUCTS = "products"
@@ -130,11 +174,22 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         const val COLUMN_CART_USER_ID = "user_id"
         const val COLUMN_CART_PRODUCT_ID = "product_id"
         const val COLUMN_CART_QUANTITY = "quantity"
-
+        const val COLUMN_CART_PURCHASE_TYPE = "purchase_type"
+        const val COLUMN_CART_ACTUAL_WEIGHT = "actual_weight"
+        const val COLUMN_CART_INPUT_QUANTITY = "input_quantity"
+        const val COLUMN_CART_ACTUAL_QUANTITY = "actual_quantity"
+        const val COLUMN_CART_TOTAL_PRICE = "total_price"
         const val COLUMN_ORDER_USER_ID = "user_id"
         const val COLUMN_ORDER_TOTAL_PRICE = "total_price"
         const val COLUMN_ORDER_CREATED_AT = "created_at"
         const val COLUMN_ORDER_STATUS = "status"
+        const val TABLE_ORDER_ITEMS = "order_items"
+        const val COLUMN_ORDER_ITEM_ORDER_ID = "order_id"
+        const val COLUMN_ORDER_ITEM_PRODUCT_ID = "product_id"
+        const val COLUMN_ORDER_ITEM_PURCHASE_TYPE = "purchase_type"
+        const val COLUMN_ORDER_ITEM_INPUT_QUANTITY = "input_quantity"
+        const val COLUMN_ORDER_ITEM_ACTUAL_QUANTITY = "actual_quantity"
+        const val COLUMN_ORDER_ITEM_TOTAL_PRICE = "total_price"
 
         private const val CREATE_USERS_TABLE = """
             CREATE TABLE $TABLE_USERS (
@@ -165,7 +220,12 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
                 $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 $COLUMN_CART_USER_ID INTEGER NOT NULL,
                 $COLUMN_CART_PRODUCT_ID INTEGER NOT NULL,
-                $COLUMN_CART_QUANTITY INTEGER NOT NULL,
+                $COLUMN_CART_PURCHASE_TYPE TEXT NOT NULL,
+                $COLUMN_CART_QUANTITY REAL NOT NULL,
+                $COLUMN_CART_ACTUAL_WEIGHT REAL NOT NULL,
+                $COLUMN_CART_INPUT_QUANTITY REAL NOT NULL,
+                $COLUMN_CART_ACTUAL_QUANTITY REAL NOT NULL,
+                $COLUMN_CART_TOTAL_PRICE REAL NOT NULL,
                 FOREIGN KEY($COLUMN_CART_USER_ID) REFERENCES $TABLE_USERS($COLUMN_ID),
                 FOREIGN KEY($COLUMN_CART_PRODUCT_ID) REFERENCES $TABLE_PRODUCTS($COLUMN_ID)
             )
@@ -179,6 +239,20 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
                 $COLUMN_ORDER_CREATED_AT INTEGER NOT NULL,
                 $COLUMN_ORDER_STATUS TEXT NOT NULL,
                 FOREIGN KEY($COLUMN_ORDER_USER_ID) REFERENCES $TABLE_USERS($COLUMN_ID)
+            )
+        """
+
+        private const val CREATE_ORDER_ITEMS_TABLE = """
+            CREATE TABLE $TABLE_ORDER_ITEMS (
+                $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                $COLUMN_ORDER_ITEM_ORDER_ID INTEGER NOT NULL,
+                $COLUMN_ORDER_ITEM_PRODUCT_ID INTEGER NOT NULL,
+                $COLUMN_ORDER_ITEM_PURCHASE_TYPE TEXT NOT NULL,
+                $COLUMN_ORDER_ITEM_INPUT_QUANTITY REAL NOT NULL,
+                $COLUMN_ORDER_ITEM_ACTUAL_QUANTITY REAL NOT NULL,
+                $COLUMN_ORDER_ITEM_TOTAL_PRICE REAL NOT NULL,
+                FOREIGN KEY($COLUMN_ORDER_ITEM_ORDER_ID) REFERENCES $TABLE_ORDERS($COLUMN_ID),
+                FOREIGN KEY($COLUMN_ORDER_ITEM_PRODUCT_ID) REFERENCES $TABLE_PRODUCTS($COLUMN_ID)
             )
         """
     }

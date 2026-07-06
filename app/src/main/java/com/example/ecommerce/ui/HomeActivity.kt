@@ -19,6 +19,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var userNameTextView: TextView
     private lateinit var userEmailTextView: TextView
     private lateinit var logoutButton: Button
+    private lateinit var cartButton: Button
     private lateinit var productsRecyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +31,7 @@ class HomeActivity : AppCompatActivity() {
         userNameTextView = findViewById(R.id.textViewUserName)
         userEmailTextView = findViewById(R.id.textViewUserEmail)
         logoutButton = findViewById(R.id.buttonLogout)
+        cartButton = findViewById(R.id.buttonOpenCart)
         productsRecyclerView = findViewById(R.id.recyclerViewProducts)
 
         showLoggedInUser()
@@ -37,6 +39,10 @@ class HomeActivity : AppCompatActivity() {
 
         logoutButton.setOnClickListener {
             logout()
+        }
+
+        cartButton.setOnClickListener {
+            startActivity(Intent(this, CartActivity::class.java))
         }
     }
 
@@ -63,6 +69,7 @@ class HomeActivity : AppCompatActivity() {
 
     private fun openProductDetail(product: Product) {
         val intent = Intent(this, ProductDetailActivity::class.java).apply {
+            putExtra(ProductDetailActivity.EXTRA_PRODUCT_ID, product.id)
             putExtra(ProductDetailActivity.EXTRA_PRODUCT_NAME, product.name)
             putExtra(ProductDetailActivity.EXTRA_PRODUCT_DESCRIPTION, product.description)
             putExtra(ProductDetailActivity.EXTRA_PRODUCT_CATEGORY, product.category)
