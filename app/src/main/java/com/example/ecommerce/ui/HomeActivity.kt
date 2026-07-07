@@ -20,6 +20,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var userEmailTextView: TextView
     private lateinit var logoutButton: Button
     private lateinit var cartButton: Button
+    private lateinit var orderHistoryButton: Button
     private lateinit var productsRecyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,6 +33,7 @@ class HomeActivity : AppCompatActivity() {
         userEmailTextView = findViewById(R.id.textViewUserEmail)
         logoutButton = findViewById(R.id.buttonLogout)
         cartButton = findViewById(R.id.buttonOpenCart)
+        orderHistoryButton = findViewById(R.id.buttonOpenOrderHistory)
         productsRecyclerView = findViewById(R.id.recyclerViewProducts)
 
         showLoggedInUser()
@@ -43,6 +45,10 @@ class HomeActivity : AppCompatActivity() {
 
         cartButton.setOnClickListener {
             startActivity(Intent(this, CartActivity::class.java))
+        }
+
+        orderHistoryButton.setOnClickListener {
+            startActivity(Intent(this, OrderHistoryActivity::class.java))
         }
     }
 
