@@ -23,12 +23,59 @@
         android:gravity="center"
         android:textSize="18sp" />
 
+    <TextView
+        android:id="@+id/textViewTotalProducts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="📦 Total Produk : 0"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/textViewTotalOrders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="📋 Total Pesanan : 0"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/textViewProcessing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="⏳ Diproses : 0"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/textViewShipped"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="🚚 Dikirim : 0"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/textViewFinished"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="✅ Selesai : 0"
+        android:textSize="16sp" />
+
     <Button
         android:id="@+id/buttonManageProducts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Kelola Produk" />
+
+    <Button
+        android:id="@+id/buttonManageOrders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Kelola Pesanan" />
 
     <Button
         android:id="@+id/buttonAdminLogout"

@@ -144,6 +144,45 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         val packageQuantity: Double
     )
 
+    fun getTotalProducts(): Int {
+        val db = readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT COUNT(*) FROM $TABLE_PRODUCTS",
+            null
+        )
+
+        cursor.moveToFirst()
+        val total = cursor.getInt(0)
+        cursor.close()
+        return total
+    }
+
+    fun getTotalOrders(): Int {
+        val db = readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT COUNT(*) FROM $TABLE_ORDERS",
+            null
+        )
+
+        cursor.moveToFirst()
+        val total = cursor.getInt(0)
+        cursor.close()
+        return total
+    }
+
+    fun getTotalOrdersByStatus(status: String): Int {
+        val db = readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT COUNT(*) FROM $TABLE_ORDERS WHERE $COLUMN_ORDER_STATUS = ?",
+            arrayOf(status)
+        )
+
+        cursor.moveToFirst()
+        val total = cursor.getInt(0)
+        cursor.close()
+        return total
+    }
+
     companion object {
         private const val DATABASE_NAME = "ecommerce.db"
         private const val DATABASE_VERSION = 5
@@ -256,4 +295,5 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
             )
         """
     }
+
 }

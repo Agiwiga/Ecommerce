@@ -45,6 +45,12 @@
             android:name=".ui.OrderDetailActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.OrderManagementActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.AdminOrderDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.LoginActivity"
             android:exported="false" />
         <activity
