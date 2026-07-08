@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <EditText
+            android:id="@+id/editTextSupplierName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nama Supplier"/>
+
+        <EditText
+            android:id="@+id/editTextSupplierAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Alamat"/>
+
+        <EditText
+            android:id="@+id/editTextSupplierPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Nomor Telepon"
+            android:inputType="phone"/>
+
+        <Button
+            android:id="@+id/buttonSaveSupplier"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Simpan"/>
+
+        <Button
+            android:id="@+id/buttonCancelSupplier"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Batal"/>
+
+    </LinearLayout>
+
+</ScrollView>

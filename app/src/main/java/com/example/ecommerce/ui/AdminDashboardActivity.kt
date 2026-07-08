@@ -14,6 +14,7 @@ class AdminDashboardActivity : AppCompatActivity() {
     private lateinit var adminNameTextView: TextView
     private lateinit var logoutButton: Button
     private lateinit var manageProductsButton: Button
+    private lateinit var manageSuppliersButton: Button
     private lateinit var manageOrdersButton: Button
     private lateinit var databaseHelper: DatabaseHelper
 
@@ -32,6 +33,7 @@ class AdminDashboardActivity : AppCompatActivity() {
         adminNameTextView = findViewById(R.id.textViewAdminName)
         logoutButton = findViewById(R.id.buttonAdminLogout)
         manageProductsButton = findViewById(R.id.buttonManageProducts)
+        manageSuppliersButton = findViewById(R.id.buttonManageSuppliers)
         manageOrdersButton = findViewById(R.id.buttonManageOrders)
         totalProductsTextView = findViewById(R.id.textViewTotalProducts)
         totalOrdersTextView = findViewById(R.id.textViewTotalOrders)
@@ -45,11 +47,12 @@ class AdminDashboardActivity : AppCompatActivity() {
         logoutButton.setOnClickListener {
             logout()
         }
-
         manageProductsButton.setOnClickListener {
             startActivity(Intent(this, ProductManagementActivity::class.java))
         }
-
+        manageSuppliersButton.setOnClickListener {
+            startActivity(Intent(this, SupplierManagementActivity::class.java))
+        }
         manageOrdersButton.setOnClickListener {
             startActivity(Intent(this, OrderManagementActivity::class.java))
         }

@@ -14,11 +14,13 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(CREATE_USERS_TABLE)
         db.execSQL(CREATE_PRODUCTS_TABLE)
+        db.execSQL(CREATE_SUPPLIERS_TABLE)
         db.execSQL(CREATE_CART_TABLE)
         db.execSQL(CREATE_ORDERS_TABLE)
         db.execSQL(CREATE_ORDER_ITEMS_TABLE)
         insertDefaultAdmin(db)
         insertSampleProducts(db)
+        insertDefaultSuppliers(db)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -66,6 +68,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
                 "ALTER TABLE $TABLE_CART ADD COLUMN $COLUMN_CART_ACTUAL_QUANTITY REAL NOT NULL DEFAULT 0"
             )
             db.execSQL(CREATE_ORDER_ITEMS_TABLE)
+        }
+        if (oldVersion < 6) {
+            db.execSQL(CREATE_SUPPLIERS_TABLE)
+            insertDefaultSuppliers(db)
         }
     }
 
@@ -133,6 +139,23 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
             db.insert(TABLE_PRODUCTS, null, values)
         }
     }
+    private fun insertDefaultSuppliers(db: SQLiteDatabase) {
+        val suppliers = listOf(
+            Triple("Supplier A", "Kota A", "081111111111"),
+            Triple("Supplier B", "Kota B", "082222222222"),
+            Triple("Supplier C", "Kota C", "083333333333"),
+            Triple("Supplier D", "Kota D", "084444444444")
+        )
+
+        suppliers.forEach {
+            val values = ContentValues().apply {
+                put(COLUMN_SUPPLIER_NAME, it.first)
+                put(COLUMN_SUPPLIER_ADDRESS, it.second)
+                put(COLUMN_SUPPLIER_PHONE, it.third)
+            }
+            db.insert(TABLE_SUPPLIERS, null, values)
+        }
+    }
 
     private data class SampleProduct(
         val name: String,
@@ -185,10 +208,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
 
     companion object {
         private const val DATABASE_NAME = "ecommerce.db"
-        private const val DATABASE_VERSION = 5
+        private const val DATABASE_VERSION = 6
 
         const val TABLE_USERS = "users"
         const val TABLE_PRODUCTS = "products"
+        const val TABLE_SUPPLIERS = "suppliers"
         const val TABLE_CART = "cart"
         const val TABLE_ORDERS = "orders"
 
@@ -210,6 +234,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         const val COLUMN_PRODUCT_CATEGORY = "category"
         const val COLUMN_PRODUCT_SALE_TYPE = "sale_type"
         const val COLUMN_PRODUCT_PACKAGE_QUANTITY = "package_quantity"
+        const val COLUMN_SUPPLIER_NAME = "supplier_name"
+        const val COLUMN_SUPPLIER_ADDRESS = "supplier_address"
+        const val COLUMN_SUPPLIER_PHONE = "supplier_phone"
         const val COLUMN_CART_USER_ID = "user_id"
         const val COLUMN_CART_PRODUCT_ID = "product_id"
         const val COLUMN_CART_QUANTITY = "quantity"
@@ -253,7 +280,14 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
                 $COLUMN_PRODUCT_PACKAGE_QUANTITY REAL NOT NULL
             )
         """
-
+        private const val CREATE_SUPPLIERS_TABLE = """
+            CREATE TABLE $TABLE_SUPPLIERS (
+                $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                $COLUMN_SUPPLIER_NAME TEXT NOT NULL,
+                $COLUMN_SUPPLIER_ADDRESS TEXT NOT NULL,
+                $COLUMN_SUPPLIER_PHONE TEXT NOT NULL
+             )
+        """
         private const val CREATE_CART_TABLE = """
             CREATE TABLE $TABLE_CART (
                 $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
