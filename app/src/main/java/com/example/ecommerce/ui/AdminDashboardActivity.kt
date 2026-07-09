@@ -16,6 +16,8 @@ class AdminDashboardActivity : AppCompatActivity() {
     private lateinit var manageProductsButton: Button
     private lateinit var manageSuppliersButton: Button
     private lateinit var manageOrdersButton: Button
+    private lateinit var restockHistoryButton: Button
+    private lateinit var restockButton: Button
     private lateinit var databaseHelper: DatabaseHelper
 
     private lateinit var totalProductsTextView: TextView
@@ -35,6 +37,8 @@ class AdminDashboardActivity : AppCompatActivity() {
         manageProductsButton = findViewById(R.id.buttonManageProducts)
         manageSuppliersButton = findViewById(R.id.buttonManageSuppliers)
         manageOrdersButton = findViewById(R.id.buttonManageOrders)
+        restockHistoryButton = findViewById(R.id.buttonRestockHistory)
+        restockButton = findViewById(R.id.buttonRestock)
         totalProductsTextView = findViewById(R.id.textViewTotalProducts)
         totalOrdersTextView = findViewById(R.id.textViewTotalOrders)
         processingTextView = findViewById(R.id.textViewProcessing)
@@ -55,6 +59,14 @@ class AdminDashboardActivity : AppCompatActivity() {
         }
         manageOrdersButton.setOnClickListener {
             startActivity(Intent(this, OrderManagementActivity::class.java))
+        }
+        restockHistoryButton.setOnClickListener {
+            startActivity(
+                Intent(this, RestockHistoryActivity::class.java)
+            )
+        }
+        restockButton.setOnClickListener {
+            startActivity(Intent(this, RestockActivity::class.java))
         }
     }
     override fun onResume() {

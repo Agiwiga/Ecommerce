@@ -85,6 +85,20 @@
         android:text="Kelola Pesanan" />
 
     <Button
+        android:id="@+id/buttonRestockHistory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Riwayat Restock" />
+
+    <Button
+        android:id="@+id/buttonRestock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Restock Barang" />
+
+    <Button
         android:id="@+id/buttonAdminLogout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

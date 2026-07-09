@@ -15,6 +15,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         db.execSQL(CREATE_USERS_TABLE)
         db.execSQL(CREATE_PRODUCTS_TABLE)
         db.execSQL(CREATE_SUPPLIERS_TABLE)
+        db.execSQL(CREATE_RESTOCK_TABLE)
         db.execSQL(CREATE_CART_TABLE)
         db.execSQL(CREATE_ORDERS_TABLE)
         db.execSQL(CREATE_ORDER_ITEMS_TABLE)
@@ -25,25 +26,24 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         if (oldVersion < 2) {
-
             db.execSQL(
                 "ALTER TABLE $TABLE_USERS ADD COLUMN $COLUMN_USER_ROLE TEXT NOT NULL DEFAULT '$ROLE_CUSTOMER'"
             )
             insertDefaultAdmin(db)
         }
+
         if (oldVersion < 3) {
             db.execSQL(
                 "ALTER TABLE $TABLE_PRODUCTS ADD COLUMN $COLUMN_PRODUCT_CATEGORY TEXT NOT NULL DEFAULT 'Pakan'"
             )
-
             db.execSQL(
                 "ALTER TABLE $TABLE_PRODUCTS ADD COLUMN $COLUMN_PRODUCT_SALE_TYPE TEXT NOT NULL DEFAULT 'weight'"
             )
-
             db.execSQL(
                 "ALTER TABLE $TABLE_PRODUCTS ADD COLUMN $COLUMN_PRODUCT_PACKAGE_QUANTITY REAL NOT NULL DEFAULT 50"
             )
         }
+
         if (oldVersion < 4) {
             db.execSQL(
                 "ALTER TABLE $TABLE_CART ADD COLUMN $COLUMN_CART_PURCHASE_TYPE TEXT NOT NULL DEFAULT 'Kg'"
@@ -57,6 +57,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
                 "ALTER TABLE $TABLE_CART ADD COLUMN $COLUMN_CART_TOTAL_PRICE REAL NOT NULL DEFAULT 0"
             )
         }
+
         if (oldVersion < 5) {
             db.execSQL(
                 "UPDATE $TABLE_PRODUCTS SET $COLUMN_PRODUCT_SALE_TYPE = 'Berat' WHERE $COLUMN_PRODUCT_SALE_TYPE = 'weight'"
@@ -69,9 +70,14 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
             )
             db.execSQL(CREATE_ORDER_ITEMS_TABLE)
         }
+
         if (oldVersion < 6) {
             db.execSQL(CREATE_SUPPLIERS_TABLE)
             insertDefaultSuppliers(db)
+        }
+
+        if (oldVersion < 7) {
+            db.execSQL(CREATE_RESTOCK_TABLE)
         }
     }
 
@@ -208,11 +214,12 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
 
     companion object {
         private const val DATABASE_NAME = "ecommerce.db"
-        private const val DATABASE_VERSION = 6
+        private const val DATABASE_VERSION = 7
 
         const val TABLE_USERS = "users"
         const val TABLE_PRODUCTS = "products"
         const val TABLE_SUPPLIERS = "suppliers"
+        const val TABLE_RESTOCK = "restock"
         const val TABLE_CART = "cart"
         const val TABLE_ORDERS = "orders"
 
@@ -237,6 +244,12 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         const val COLUMN_SUPPLIER_NAME = "supplier_name"
         const val COLUMN_SUPPLIER_ADDRESS = "supplier_address"
         const val COLUMN_SUPPLIER_PHONE = "supplier_phone"
+        const val COLUMN_RESTOCK_PRODUCT_ID = "product_id"
+        const val COLUMN_RESTOCK_SUPPLIER_ID = "supplier_id"
+        const val COLUMN_RESTOCK_QUANTITY = "quantity"
+        const val COLUMN_RESTOCK_PURCHASE_PRICE = "purchase_price"
+        const val COLUMN_RESTOCK_TOTAL_COST = "total_cost"
+        const val COLUMN_RESTOCK_CREATED_AT = "created_at"
         const val COLUMN_CART_USER_ID = "user_id"
         const val COLUMN_CART_PRODUCT_ID = "product_id"
         const val COLUMN_CART_QUANTITY = "quantity"
@@ -288,6 +301,22 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
                 $COLUMN_SUPPLIER_PHONE TEXT NOT NULL
              )
         """
+
+        private const val CREATE_RESTOCK_TABLE = """
+            CREATE TABLE $TABLE_RESTOCK (
+                $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                $COLUMN_RESTOCK_PRODUCT_ID INTEGER NOT NULL,
+                $COLUMN_RESTOCK_SUPPLIER_ID INTEGER NOT NULL,
+                $COLUMN_RESTOCK_QUANTITY REAL NOT NULL,
+                $COLUMN_RESTOCK_PURCHASE_PRICE REAL NOT NULL,
+                $COLUMN_RESTOCK_TOTAL_COST REAL NOT NULL,
+                $COLUMN_RESTOCK_CREATED_AT INTEGER NOT NULL,
+                FOREIGN KEY($COLUMN_RESTOCK_PRODUCT_ID)
+                    REFERENCES $TABLE_PRODUCTS($COLUMN_ID),
+                FOREIGN KEY($COLUMN_RESTOCK_SUPPLIER_ID)
+                    REFERENCES $TABLE_SUPPLIERS($COLUMN_ID)
+            )
+            """
         private const val CREATE_CART_TABLE = """
             CREATE TABLE $TABLE_CART (
                 $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
