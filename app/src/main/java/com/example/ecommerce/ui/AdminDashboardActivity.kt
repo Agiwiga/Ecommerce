@@ -18,6 +18,7 @@ class AdminDashboardActivity : AppCompatActivity() {
     private lateinit var manageOrdersButton: Button
     private lateinit var restockHistoryButton: Button
     private lateinit var restockButton: Button
+    private lateinit var buttonProfitReport: Button
     private lateinit var databaseHelper: DatabaseHelper
     private lateinit var totalProductsTextView: TextView
     private lateinit var totalOrdersTextView: TextView
@@ -38,6 +39,7 @@ class AdminDashboardActivity : AppCompatActivity() {
         manageOrdersButton = findViewById(R.id.buttonManageOrders)
         restockHistoryButton = findViewById(R.id.buttonRestockHistory)
         restockButton = findViewById(R.id.buttonRestock)
+        buttonProfitReport = findViewById(R.id.buttonProfitReport)
         totalProductsTextView = findViewById(R.id.textViewTotalProducts)
         totalOrdersTextView = findViewById(R.id.textViewTotalOrders)
         processingTextView = findViewById(R.id.textViewProcessing)
@@ -62,6 +64,11 @@ class AdminDashboardActivity : AppCompatActivity() {
         restockHistoryButton.setOnClickListener {
             startActivity(
                 Intent(this, RestockHistoryActivity::class.java)
+            )
+        }
+        buttonProfitReport.setOnClickListener {
+            startActivity(
+                Intent(this, ProfitReportActivity::class.java)
             )
         }
         restockButton.setOnClickListener {

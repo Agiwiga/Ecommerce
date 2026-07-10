@@ -212,6 +212,42 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         return total
     }
 
+    fun isEmailExists(email: String): Boolean {
+
+        val database = readableDatabase
+
+        val cursor = database.query(
+            TABLE_USERS,
+            arrayOf(COLUMN_ID),
+            "$COLUMN_USER_EMAIL = ?",
+            arrayOf(email),
+            null,
+            null,
+            null
+        )
+
+        cursor.use {
+            return it.moveToFirst()
+        }
+    }
+
+    fun updatePassword(
+        email: String,
+        newPassword: String
+    ): Boolean {
+
+        val values = android.content.ContentValues().apply {
+            put(COLUMN_USER_PASSWORD, newPassword)
+        }
+
+        return writableDatabase.update(
+            TABLE_USERS,
+            values,
+            "$COLUMN_USER_EMAIL = ?",
+            arrayOf(email)
+        ) > 0
+    }
+
     companion object {
         private const val DATABASE_NAME = "ecommerce.db"
         private const val DATABASE_VERSION = 8

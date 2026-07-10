@@ -53,12 +53,16 @@
         <activity
             android:name=".ui.LoginActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.ProfitReportActivity"/>
         <activity android:name=".ui.SupplierManagementActivity"/>
         <activity android:name=".ui.AddSupplierActivity"/>
         <activity android:name=".ui.EditSupplierActivity"/>
         <activity android:name=".ui.RestockActivity"/>
         <activity android:name=".ui.RestockHistoryActivity"/>
         <activity android:name=".ui.PaymentActivity"/>
+        <activity
+            android:name=".ui.ForgotPasswordActivity"/>
         <activity
             android:name=".ui.MainActivity"
             android:exported="true">

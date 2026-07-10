@@ -10,14 +10,17 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.ecommerce.R
 import com.example.ecommerce.data.DatabaseHelper
 import com.example.ecommerce.session.SessionManager
+import android.widget.TextView
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var databaseHelper: DatabaseHelper
     private lateinit var sessionManager: SessionManager
     private lateinit var emailEditText: EditText
     private lateinit var passwordEditText: EditText
+    private lateinit var forgotPasswordTextView: TextView
     private lateinit var loginButton: Button
     private lateinit var registerButton: Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +33,7 @@ class LoginActivity : AppCompatActivity() {
         passwordEditText = findViewById(R.id.editTextPassword)
         loginButton = findViewById(R.id.buttonLogin)
         registerButton = findViewById(R.id.buttonOpenRegister)
+        forgotPasswordTextView = findViewById(R.id.textViewForgotPassword)
 
         loginButton.setOnClickListener {
             Log.d(TAG, "Tombol Login ditekan")
@@ -38,6 +42,15 @@ class LoginActivity : AppCompatActivity() {
 
         registerButton.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
+        }
+        forgotPasswordTextView.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    ForgotPasswordActivity::class.java
+                )
+            )
+
         }
     }
 
