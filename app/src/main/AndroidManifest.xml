@@ -58,6 +58,7 @@
         <activity android:name=".ui.EditSupplierActivity"/>
         <activity android:name=".ui.RestockActivity"/>
         <activity android:name=".ui.RestockHistoryActivity"/>
+        <activity android:name=".ui.PaymentActivity"/>
         <activity
             android:name=".ui.MainActivity"
             android:exported="true">

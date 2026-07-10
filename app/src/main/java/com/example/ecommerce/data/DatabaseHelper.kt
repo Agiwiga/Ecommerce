@@ -214,7 +214,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
 
     companion object {
         private const val DATABASE_NAME = "ecommerce.db"
-        private const val DATABASE_VERSION = 7
+        private const val DATABASE_VERSION = 8
 
         const val TABLE_USERS = "users"
         const val TABLE_PRODUCTS = "products"
@@ -262,6 +262,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         const val COLUMN_ORDER_TOTAL_PRICE = "total_price"
         const val COLUMN_ORDER_CREATED_AT = "created_at"
         const val COLUMN_ORDER_STATUS = "status"
+        const val COLUMN_ORDER_PAYMENT_METHOD = "payment_method"
         const val TABLE_ORDER_ITEMS = "order_items"
         const val COLUMN_ORDER_ITEM_ORDER_ID = "order_id"
         const val COLUMN_ORDER_ITEM_PRODUCT_ID = "product_id"
@@ -340,6 +341,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
                 $COLUMN_ORDER_TOTAL_PRICE REAL NOT NULL,
                 $COLUMN_ORDER_CREATED_AT INTEGER NOT NULL,
                 $COLUMN_ORDER_STATUS TEXT NOT NULL,
+                payment_method TEXT NOT NULL,
                 FOREIGN KEY($COLUMN_ORDER_USER_ID) REFERENCES $TABLE_USERS($COLUMN_ID)
             )
         """

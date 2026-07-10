@@ -19,7 +19,6 @@ class AdminDashboardActivity : AppCompatActivity() {
     private lateinit var restockHistoryButton: Button
     private lateinit var restockButton: Button
     private lateinit var databaseHelper: DatabaseHelper
-
     private lateinit var totalProductsTextView: TextView
     private lateinit var totalOrdersTextView: TextView
     private lateinit var processingTextView: TextView
@@ -73,20 +72,15 @@ class AdminDashboardActivity : AppCompatActivity() {
         super.onResume()
         loadDashboardStatistics()
     }
-
     private fun loadDashboardStatistics() {
         totalProductsTextView.text =
             "📦 Total Produk : ${databaseHelper.getTotalProducts()}"
-
         totalOrdersTextView.text =
             "📋 Total Pesanan : ${databaseHelper.getTotalOrders()}"
-
         processingTextView.text =
             "⏳ Diproses : ${databaseHelper.getTotalOrdersByStatus("Diproses")}"
-
         shippedTextView.text =
             "🚚 Dikirim : ${databaseHelper.getTotalOrdersByStatus("Dikirim")}"
-
         finishedTextView.text =
             "✅ Selesai : ${databaseHelper.getTotalOrdersByStatus("Selesai")}"
     }

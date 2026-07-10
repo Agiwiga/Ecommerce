@@ -7,5 +7,6 @@ data class AdminOrder(
     val customerEmail: String,
     val totalPrice: Double,
     val createdAt: Long,
-    val status: String
+    val status: String,
+    val paymentMethod: String
 )

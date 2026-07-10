@@ -50,7 +50,10 @@ class CheckoutActivity : AppCompatActivity() {
     }
 
     private fun processCheckout() {
-        val result = checkoutRepository.checkout(sessionManager.getUserId())
+        val result = checkoutRepository.checkout(
+            sessionManager.getUserId(),
+            "COD"
+        )
         Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
         if (result.success) {
             finish()

@@ -18,6 +18,7 @@ import com.example.ecommerce.session.SessionManager
 import java.text.NumberFormat
 import java.util.Locale
 
+
 class CartActivity : AppCompatActivity() {
     private lateinit var sessionManager: SessionManager
     private lateinit var cartRepository: CartRepository
@@ -40,7 +41,11 @@ class CartActivity : AppCompatActivity() {
         checkoutButton = findViewById(R.id.buttonContinueCheckout)
 
         checkoutButton.setOnClickListener {
-            startActivity(Intent(this, CheckoutActivity::class.java))
+
+            startActivity(
+                Intent(this, PaymentActivity::class.java)
+            )
+
         }
     }
 

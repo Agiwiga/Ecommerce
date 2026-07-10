@@ -5,19 +5,23 @@ import com.example.ecommerce.model.Order
 import com.example.ecommerce.model.OrderItem
 
 class OrderRepository(context: Context) {
+
     private val databaseHelper = DatabaseHelper(context)
 
     fun getOrdersByUser(userId: Int): List<Order> {
+
         val orders = mutableListOf<Order>()
+
         val database = databaseHelper.readableDatabase
+
         val cursor = database.query(
             DatabaseHelper.TABLE_ORDERS,
             arrayOf(
                 DatabaseHelper.COLUMN_ID,
-                DatabaseHelper.COLUMN_ORDER_USER_ID,
                 DatabaseHelper.COLUMN_ORDER_TOTAL_PRICE,
                 DatabaseHelper.COLUMN_ORDER_CREATED_AT,
-                DatabaseHelper.COLUMN_ORDER_STATUS
+                DatabaseHelper.COLUMN_ORDER_STATUS,
+                DatabaseHelper.COLUMN_ORDER_PAYMENT_METHOD
             ),
             "${DatabaseHelper.COLUMN_ORDER_USER_ID} = ?",
             arrayOf(userId.toString()),
@@ -27,12 +31,13 @@ class OrderRepository(context: Context) {
         )
 
         cursor.use {
+
             while (it.moveToNext()) {
+
                 orders.add(
                     Order(
-                        id = it.getInt(it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID)),
-                        userId = it.getInt(
-                            it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ORDER_USER_ID)
+                        id = it.getInt(
+                            it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID)
                         ),
                         totalPrice = it.getDouble(
                             it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ORDER_TOTAL_PRICE)
@@ -42,25 +47,32 @@ class OrderRepository(context: Context) {
                         ),
                         status = it.getString(
                             it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ORDER_STATUS)
+                        ),
+                        paymentMethod = it.getString(
+                            it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ORDER_PAYMENT_METHOD)
                         )
                     )
                 )
+
             }
+
         }
 
         return orders
     }
 
     fun getOrderById(orderId: Int, userId: Int): Order? {
+
         val database = databaseHelper.readableDatabase
+
         val cursor = database.query(
             DatabaseHelper.TABLE_ORDERS,
             arrayOf(
                 DatabaseHelper.COLUMN_ID,
-                DatabaseHelper.COLUMN_ORDER_USER_ID,
                 DatabaseHelper.COLUMN_ORDER_TOTAL_PRICE,
                 DatabaseHelper.COLUMN_ORDER_CREATED_AT,
-                DatabaseHelper.COLUMN_ORDER_STATUS
+                DatabaseHelper.COLUMN_ORDER_STATUS,
+                DatabaseHelper.COLUMN_ORDER_PAYMENT_METHOD
             ),
             "${DatabaseHelper.COLUMN_ID} = ? AND ${DatabaseHelper.COLUMN_ORDER_USER_ID} = ?",
             arrayOf(orderId.toString(), userId.toString()),
@@ -71,10 +83,13 @@ class OrderRepository(context: Context) {
         )
 
         cursor.use {
+
             return if (it.moveToFirst()) {
+
                 Order(
-                    id = it.getInt(it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID)),
-                    userId = it.getInt(it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ORDER_USER_ID)),
+                    id = it.getInt(
+                        it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID)
+                    ),
                     totalPrice = it.getDouble(
                         it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ORDER_TOTAL_PRICE)
                     ),
@@ -83,17 +98,28 @@ class OrderRepository(context: Context) {
                     ),
                     status = it.getString(
                         it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ORDER_STATUS)
+                    ),
+                    paymentMethod = it.getString(
+                        it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ORDER_PAYMENT_METHOD)
                     )
                 )
+
             } else {
+
                 null
+
             }
+
         }
+
     }
 
     fun getOrderItems(orderId: Int): List<OrderItem> {
+
         val items = mutableListOf<OrderItem>()
+
         val database = databaseHelper.readableDatabase
+
         val query = """
             SELECT
                 oi.${DatabaseHelper.COLUMN_ID} AS order_item_id,
@@ -112,17 +138,26 @@ class OrderRepository(context: Context) {
             ORDER BY oi.${DatabaseHelper.COLUMN_ID} ASC
         """.trimIndent()
 
-        val cursor = database.rawQuery(query, arrayOf(orderId.toString()))
+        val cursor = database.rawQuery(
+            query,
+            arrayOf(orderId.toString())
+        )
+
         cursor.use {
+
             while (it.moveToNext()) {
+
                 val productNameIndex =
                     it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PRODUCT_NAME)
+
                 val productPriceIndex =
                     it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PRODUCT_PRICE)
 
                 items.add(
                     OrderItem(
-                        id = it.getInt(it.getColumnIndexOrThrow("order_item_id")),
+                        id = it.getInt(
+                            it.getColumnIndexOrThrow("order_item_id")
+                        ),
                         orderId = it.getInt(
                             it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ORDER_ITEM_ORDER_ID)
                         ),
@@ -138,14 +173,10 @@ class OrderRepository(context: Context) {
                             it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ORDER_ITEM_PURCHASE_TYPE)
                         ),
                         inputQuantity = it.getDouble(
-                            it.getColumnIndexOrThrow(
-                                DatabaseHelper.COLUMN_ORDER_ITEM_INPUT_QUANTITY
-                            )
+                            it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ORDER_ITEM_INPUT_QUANTITY)
                         ),
                         actualQuantity = it.getDouble(
-                            it.getColumnIndexOrThrow(
-                                DatabaseHelper.COLUMN_ORDER_ITEM_ACTUAL_QUANTITY
-                            )
+                            it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ORDER_ITEM_ACTUAL_QUANTITY)
                         ),
                         itemPrice = if (it.isNull(productPriceIndex)) {
                             0.0
@@ -157,7 +188,9 @@ class OrderRepository(context: Context) {
                         )
                     )
                 )
+
             }
+
         }
 
         return items

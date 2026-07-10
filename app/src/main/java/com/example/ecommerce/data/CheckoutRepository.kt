@@ -9,7 +9,10 @@ class CheckoutRepository(context: Context) {
     private val databaseHelper = DatabaseHelper(context)
     private val cartRepository = CartRepository(context)
 
-    fun checkout(userId: Int): CheckoutResult {
+    fun checkout(
+        userId: Int,
+        paymentMethod: String
+    ): CheckoutResult {
         val cartItems = cartRepository.getCartItems(userId)
         Log.d(TAG, "Mulai checkout userId=$userId, jumlah cart=${cartItems.size}")
         cartItems.forEach { item ->
@@ -28,6 +31,11 @@ class CheckoutRepository(context: Context) {
         try {
             val totalPrice = cartItems.sumOf { it.totalPrice }
 
+            val orderStatus = if (paymentMethod == "COD") {
+                "Diproses"
+            } else {
+                "Menunggu Pembayaran"
+            }
             val orderId = database.insert(
                 DatabaseHelper.TABLE_ORDERS,
                 null,
@@ -35,7 +43,11 @@ class CheckoutRepository(context: Context) {
                     put(DatabaseHelper.COLUMN_ORDER_USER_ID, userId)
                     put(DatabaseHelper.COLUMN_ORDER_TOTAL_PRICE, totalPrice)
                     put(DatabaseHelper.COLUMN_ORDER_CREATED_AT, System.currentTimeMillis())
-                    put(DatabaseHelper.COLUMN_ORDER_STATUS, "Diproses")
+                    put(DatabaseHelper.COLUMN_ORDER_STATUS, orderStatus)
+                    put(
+                        DatabaseHelper.COLUMN_ORDER_PAYMENT_METHOD,
+                        paymentMethod
+                    )
                 }
             )
 

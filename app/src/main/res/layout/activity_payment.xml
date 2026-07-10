@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Metode Pembayaran"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:layout_marginBottom="24dp"/>
+
+    <RadioGroup
+        android:id="@+id/radioGroupPayment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/radioTransfer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Transfer Bank"/>
+
+        <RadioButton
+            android:id="@+id/radioQris"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="QRIS"/>
+
+        <RadioButton
+            android:id="@+id/radioCod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="COD (Bayar di Tempat)"/>
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/buttonContinuePayment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Lanjutkan"/>
+
+</LinearLayout>
