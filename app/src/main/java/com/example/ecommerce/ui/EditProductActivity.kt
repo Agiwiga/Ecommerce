@@ -10,6 +10,8 @@ import com.example.ecommerce.R
 import com.example.ecommerce.data.DatabaseHelper
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.view.View
+import android.widget.AdapterView
 
 class EditProductActivity : AppCompatActivity() {
     private lateinit var databaseHelper: DatabaseHelper
@@ -19,6 +21,7 @@ class EditProductActivity : AppCompatActivity() {
     private lateinit var categorySpinner: Spinner
     private lateinit var saleTypeSpinner: Spinner
     private lateinit var packageQuantityEditText: EditText
+    private lateinit var weightEditText: EditText
     private lateinit var stockEditText: EditText
     private lateinit var saveButton: Button
     private lateinit var cancelButton: Button
@@ -36,9 +39,8 @@ class EditProductActivity : AppCompatActivity() {
         categorySpinner = findViewById(R.id.spinnerEditCategory)
         saleTypeSpinner = findViewById(R.id.spinnerEditSaleType)
         packageQuantityEditText = findViewById(R.id.editTextEditPackageQuantity)
+        weightEditText = findViewById(R.id.editTextEditProductWeight)
         stockEditText = findViewById(R.id.editTextEditProductStock)
-
-
 
         val categories = listOf("Pakan", "Vitamin", "Obat", "Peralatan")
         categorySpinner.adapter = ArrayAdapter(
@@ -53,6 +55,20 @@ class EditProductActivity : AppCompatActivity() {
             android.R.layout.simple_spinner_dropdown_item,
             saleTypes
         )
+        saleTypeSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: android.view.View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    updateWeightVisibility()
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
 
         loadProductData()
         saveButton.setOnClickListener {
@@ -73,10 +89,13 @@ class EditProductActivity : AppCompatActivity() {
         packageQuantityEditText.setText(
             intent.getDoubleExtra(EXTRA_PRODUCT_PACKAGE_QUANTITY, 0.0).toString()
         )
-
         stockEditText.setText(
             intent.getDoubleExtra(EXTRA_PRODUCT_STOCK, 0.0).toString()
         )
+        weightEditText.setText(
+            intent.getDoubleExtra(EXTRA_PRODUCT_WEIGHT, 1.0).toString()
+        )
+
         val category = intent.getStringExtra(EXTRA_PRODUCT_CATEGORY).orEmpty()
         val saleType = intent.getStringExtra(EXTRA_PRODUCT_SALE_TYPE).orEmpty()
         val categoryPosition = (categorySpinner.adapter as ArrayAdapter<String>)
@@ -98,6 +117,7 @@ class EditProductActivity : AppCompatActivity() {
 
         val packageQuantityText = packageQuantityEditText.text.toString().trim()
         val stockText = stockEditText.text.toString().trim()
+        val weightText = weightEditText.text.toString().trim()
 
         if (packageQuantityText.isEmpty()) {
             packageQuantityEditText.error = "Isi kemasan wajib diisi"
@@ -135,6 +155,26 @@ class EditProductActivity : AppCompatActivity() {
             return
         }
 
+        val weight =
+            if (saleType == "Satuan") {
+                weightText.toDoubleOrNull() ?: 0.0
+            } else {
+                1.0
+            }
+
+        if (saleType == "Satuan") {
+
+            if (weightText.isEmpty()) {
+                weightEditText.error = "Berat wajib diisi"
+                return
+            }
+
+            if (weight <= 0) {
+                weightEditText.error = "Berat tidak valid"
+                return
+            }
+        }
+
         val price = priceText.toDoubleOrNull()
         if (price == null || price <= 0.0) {
             productPriceEditText.error = "Harga harus berupa angka positif"
@@ -149,6 +189,7 @@ class EditProductActivity : AppCompatActivity() {
             put(DatabaseHelper.COLUMN_PRODUCT_PACKAGE_QUANTITY, packageQuantity)
             put(DatabaseHelper.COLUMN_PRODUCT_STOCK, stock)
             put(DatabaseHelper.COLUMN_PRODUCT_DESCRIPTION, description)
+            put(DatabaseHelper.COLUMN_PRODUCT_WEIGHT, weight)
         }
 
 
@@ -166,7 +207,19 @@ class EditProductActivity : AppCompatActivity() {
             Toast.makeText(this, "Produk gagal diperbarui", Toast.LENGTH_SHORT).show()
         }
     }
+    private fun updateWeightVisibility() {
 
+        if (saleTypeSpinner.selectedItem.toString() == "Satuan") {
+
+            weightEditText.visibility = View.VISIBLE
+
+        } else {
+
+            weightEditText.visibility = View.GONE
+
+        }
+
+    }
     companion object {
         const val EXTRA_PRODUCT_ID = "extra_product_id"
         const val EXTRA_PRODUCT_NAME = "extra_product_name"
@@ -176,6 +229,7 @@ class EditProductActivity : AppCompatActivity() {
         const val EXTRA_PRODUCT_SALE_TYPE = "extra_product_sale_type"
         const val EXTRA_PRODUCT_PACKAGE_QUANTITY = "extra_product_package_quantity"
         const val EXTRA_PRODUCT_STOCK = "extra_product_stock"
+        const val EXTRA_PRODUCT_WEIGHT = "extra_product_weight"
     }
     }
 

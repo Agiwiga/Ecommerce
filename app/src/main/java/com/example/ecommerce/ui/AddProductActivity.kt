@@ -11,6 +11,7 @@ import com.example.ecommerce.data.DatabaseHelper
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.AdapterView
+import android.view.View
 
 class AddProductActivity : AppCompatActivity() {
     private lateinit var databaseHelper: DatabaseHelper
@@ -20,9 +21,12 @@ class AddProductActivity : AppCompatActivity() {
     private lateinit var categorySpinner: Spinner
     private lateinit var saleTypeSpinner: Spinner
     private lateinit var packageQuantityEditText: EditText
+    private lateinit var weightEditText: EditText
     private lateinit var stockEditText: EditText
+
     private lateinit var saveButton: Button
     private lateinit var cancelButton: Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +42,7 @@ class AddProductActivity : AppCompatActivity() {
         stockEditText = findViewById(R.id.editTextProductStock)
         saveButton = findViewById(R.id.buttonSaveProduct)
         cancelButton = findViewById(R.id.buttonCancelProduct)
+        weightEditText = findViewById(R.id.editTextProductWeight)
 
         val categories = listOf("Pakan", "Vitamin", "Obat", "Peralatan")
 
@@ -80,13 +85,17 @@ class AddProductActivity : AppCompatActivity() {
 
     private fun updateInputHints(saleType: String) {
         if (saleType == "Berat") {
+
             productPriceEditText.hint = "Harga per Kg"
             packageQuantityEditText.hint = "Isi Karung (Kg)"
             stockEditText.hint = "Stok (Karung)"
+            weightEditText.visibility = View.GONE
         } else {
+
             productPriceEditText.hint = "Harga per Pcs"
             packageQuantityEditText.hint = "Isi Pack (Pcs)"
             stockEditText.hint = "Stok (Pack)"
+            weightEditText.visibility = View.VISIBLE
         }
     }
 
@@ -98,6 +107,7 @@ class AddProductActivity : AppCompatActivity() {
         val saleType = saleTypeSpinner.selectedItem.toString()
         val packageQuantityText = packageQuantityEditText.text.toString().trim()
         val stockText = stockEditText.text.toString().trim()
+        val weightText = weightEditText.text.toString().trim()
 
         if (name.isEmpty()) {
             productNameEditText.error = "Nama produk wajib diisi"
@@ -119,6 +129,14 @@ class AddProductActivity : AppCompatActivity() {
             stockEditText.error = "Stok wajib diisi"
             return
         }
+        if (saleType == "Satuan") {
+
+            if (weightText.isEmpty()) {
+                weightEditText.error = "Berat wajib diisi"
+                return
+            }
+
+        }
 
         val packageQuantity = packageQuantityText.toDoubleOrNull()
         if (packageQuantity == null || packageQuantity <= 0) {
@@ -126,6 +144,16 @@ class AddProductActivity : AppCompatActivity() {
             return
         }
         val stock = stockText.toDoubleOrNull()
+        val weight =
+            if (saleType == "Satuan") {
+                weightText.toDoubleOrNull() ?: 0.0
+            } else {
+                1.0
+            }
+        if (saleType == "Satuan" && weight <= 0) {
+            weightEditText.error = "Berat tidak valid"
+            return
+        }
         if (stock == null || stock < 0) {
             stockEditText.error = "Stok tidak valid"
             return
@@ -146,6 +174,7 @@ class AddProductActivity : AppCompatActivity() {
             put(DatabaseHelper.COLUMN_PRODUCT_CATEGORY, category)
             put(DatabaseHelper.COLUMN_PRODUCT_SALE_TYPE, saleType)
             put(DatabaseHelper.COLUMN_PRODUCT_PACKAGE_QUANTITY, packageQuantity)
+            put(DatabaseHelper.COLUMN_PRODUCT_WEIGHT, weight)
         }
 
         val result = databaseHelper.writableDatabase.insert(

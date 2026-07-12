@@ -219,6 +219,7 @@ class HomeActivity : AppCompatActivity() {
             putExtra(ProductDetailActivity.EXTRA_PRODUCT_PRICE, product.price)
             putExtra(ProductDetailActivity.EXTRA_PRODUCT_PACKAGE_QUANTITY, product.packageQuantity)
             putExtra(ProductDetailActivity.EXTRA_PRODUCT_STOCK, product.stock)
+            putExtra(ProductDetailActivity.EXTRA_PRODUCT_WEIGHT, product.weight)
         }
         startActivity(intent)
     }
@@ -227,6 +228,7 @@ class HomeActivity : AppCompatActivity() {
         val products = mutableListOf<Product>()
         val database = databaseHelper.readableDatabase
 
+
         val cursor = database.query(
             DatabaseHelper.TABLE_PRODUCTS,
             arrayOf(
@@ -234,14 +236,17 @@ class HomeActivity : AppCompatActivity() {
                 DatabaseHelper.COLUMN_PRODUCT_DESCRIPTION, DatabaseHelper.COLUMN_PRODUCT_PRICE,
                 DatabaseHelper.COLUMN_PRODUCT_IMAGE_URL, DatabaseHelper.COLUMN_PRODUCT_STOCK,
                 DatabaseHelper.COLUMN_PRODUCT_CATEGORY, DatabaseHelper.COLUMN_PRODUCT_SALE_TYPE,
-                DatabaseHelper.COLUMN_PRODUCT_PACKAGE_QUANTITY
+                DatabaseHelper.COLUMN_PRODUCT_PACKAGE_QUANTITY,
+                DatabaseHelper.COLUMN_PRODUCT_WEIGHT
             ),
             null, null, null, null, DatabaseHelper.COLUMN_PRODUCT_NAME
         )
 
         cursor.use {
             while (it.moveToNext()) {
+                val weightIndex = it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PRODUCT_WEIGHT)
                 products.add(
+
                     Product(
                         id = it.getInt(it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID)),
                         name = it.getString(it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PRODUCT_NAME)),
@@ -251,7 +256,8 @@ class HomeActivity : AppCompatActivity() {
                         stock = it.getDouble(it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PRODUCT_STOCK)),
                         category = it.getString(it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PRODUCT_CATEGORY)),
                         saleType = it.getString(it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PRODUCT_SALE_TYPE)),
-                        packageQuantity = it.getDouble(it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PRODUCT_PACKAGE_QUANTITY))
+                        packageQuantity = it.getDouble(it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PRODUCT_PACKAGE_QUANTITY)) ,
+                        weight = it.getDouble(weightIndex)
                     )
                 )
             }

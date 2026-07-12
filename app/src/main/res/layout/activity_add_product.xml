@@ -72,6 +72,19 @@
             android:hint="Stok"
             android:inputType="numberDecimal" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Berat Produk (kg)"
+            android:layout_marginTop="12dp"/>
+
+        <EditText
+            android:id="@+id/editTextProductWeight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Contoh : 25"
+            android:inputType="numberDecimal"/>
+
         <EditText
             android:id="@+id/editTextProductDescription"
             android:layout_width="match_parent"

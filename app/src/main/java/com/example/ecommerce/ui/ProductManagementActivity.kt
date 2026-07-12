@@ -28,10 +28,10 @@ class ProductManagementActivity : AppCompatActivity() {
         productRepository = ProductRepository(this)
         productsRecyclerView = findViewById(R.id.recyclerViewAdminProducts)
         addProductButton = findViewById(R.id.buttonAddProduct)
-
         addProductButton.setOnClickListener {
             startActivity(Intent(this, AddProductActivity::class.java))
         }
+
     }
 
     override fun onResume() {
@@ -91,6 +91,7 @@ class ProductManagementActivity : AppCompatActivity() {
             putExtra(EditProductActivity.EXTRA_PRODUCT_CATEGORY, product.category)
             putExtra(EditProductActivity.EXTRA_PRODUCT_SALE_TYPE, product.saleType)
             putExtra(EditProductActivity.EXTRA_PRODUCT_PACKAGE_QUANTITY, product.packageQuantity)
+            putExtra(EditProductActivity.EXTRA_PRODUCT_WEIGHT, product.weight)
             putExtra(EditProductActivity.EXTRA_PRODUCT_STOCK, product.stock)
         }
         startActivity(intent)

@@ -50,7 +50,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
             )
 
             db.execSQL(
-                "ALTER TABLE $TABLE_CART ADD COLUMN $COLUMN_CART_ACTUAL_WEIGHT REAL NOT NULL DEFAULT 0"
+                "ALTER TABLE $TABLE_CART ADD COLUMN $COLUMN_CART_ACTUAL_WEIGHT REAL NOT NULL DEFAULT 1"
             )
 
             db.execSQL(
@@ -141,6 +141,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
                 put(COLUMN_PRODUCT_CATEGORY, product.category)
                 put(COLUMN_PRODUCT_SALE_TYPE, product.saleType)
                 put(COLUMN_PRODUCT_PACKAGE_QUANTITY, product.packageQuantity)
+                put(COLUMN_PRODUCT_WEIGHT, 1.0)
             }
             db.insert(TABLE_PRODUCTS, null, values)
         }
@@ -282,7 +283,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
 
     companion object {
         private const val DATABASE_NAME = "ecommerce.db"
-        private const val DATABASE_VERSION = 8
+        private const val DATABASE_VERSION = 9
 
         const val TABLE_USERS = "users"
         const val TABLE_PRODUCTS = "products"
@@ -309,6 +310,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         const val COLUMN_PRODUCT_CATEGORY = "category"
         const val COLUMN_PRODUCT_SALE_TYPE = "sale_type"
         const val COLUMN_PRODUCT_PACKAGE_QUANTITY = "package_quantity"
+        const val COLUMN_PRODUCT_WEIGHT = "weight"
         const val COLUMN_SUPPLIER_NAME = "supplier_name"
         const val COLUMN_SUPPLIER_ADDRESS = "supplier_address"
         const val COLUMN_SUPPLIER_PHONE = "supplier_phone"
@@ -359,9 +361,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
                 $COLUMN_PRODUCT_STOCK INTEGER NOT NULL,
                 $COLUMN_PRODUCT_CATEGORY TEXT NOT NULL,
                 $COLUMN_PRODUCT_SALE_TYPE TEXT NOT NULL,
-                $COLUMN_PRODUCT_PACKAGE_QUANTITY REAL NOT NULL
+                $COLUMN_PRODUCT_PACKAGE_QUANTITY REAL NOT NULL,
+                $COLUMN_PRODUCT_WEIGHT REAL NOT NULL DEFAULT 1
             )
-        """
+           """
         private const val CREATE_SUPPLIERS_TABLE = """
             CREATE TABLE $TABLE_SUPPLIERS (
                 $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,

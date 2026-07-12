@@ -53,6 +53,7 @@ class ProductDetailActivity : AppCompatActivity() {
     private var productPrice: Double = 0.0
     private var productPackageQuantity: Double = 0.0
     private var productStock: Double = 0.0
+    private var productWeight = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,7 +106,9 @@ class ProductDetailActivity : AppCompatActivity() {
         productPrice = intent.getDoubleExtra(EXTRA_PRODUCT_PRICE, 0.0)
         productPackageQuantity = intent.getDoubleExtra(EXTRA_PRODUCT_PACKAGE_QUANTITY, 0.0)
         productStock = intent.getDoubleExtra(EXTRA_PRODUCT_STOCK, 0.0)
+        productWeight = intent.getDoubleExtra(EXTRA_PRODUCT_WEIGHT, 0.0)
     }
+
 
     private fun showProductData() {
         nameTextView.text = productName
@@ -455,6 +458,7 @@ class ProductDetailActivity : AppCompatActivity() {
         const val EXTRA_CART_ID = "extra_cart_id"
         const val EXTRA_PURCHASE_TYPE = "extra_purchase_type"
         const val EXTRA_INPUT_QUANTITY = "extra_input_quantity"
+        const val EXTRA_PRODUCT_WEIGHT = "product_weight"
 
         private const val SALE_TYPE_WEIGHT = "Berat"
         private const val TAG = "ProductDetailActivity"

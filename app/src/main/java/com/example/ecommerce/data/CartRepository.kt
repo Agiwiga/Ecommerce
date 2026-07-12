@@ -60,14 +60,16 @@ class CartRepository(context: Context) {
                 p.${DatabaseHelper.COLUMN_PRODUCT_STOCK},
                 p.${DatabaseHelper.COLUMN_PRODUCT_CATEGORY},
                 p.${DatabaseHelper.COLUMN_PRODUCT_SALE_TYPE},
-                p.${DatabaseHelper.COLUMN_PRODUCT_PACKAGE_QUANTITY}
+                p.${DatabaseHelper.COLUMN_PRODUCT_PACKAGE_QUANTITY},
+                p.${DatabaseHelper.COLUMN_PRODUCT_WEIGHT}
             FROM ${DatabaseHelper.TABLE_CART} c
             INNER JOIN ${DatabaseHelper.TABLE_PRODUCTS} p
-                ON c.${DatabaseHelper.COLUMN_CART_PRODUCT_ID} = p.${DatabaseHelper.COLUMN_ID}
+            ON c.${DatabaseHelper.COLUMN_CART_PRODUCT_ID} = p.${DatabaseHelper.COLUMN_ID}
             WHERE c.${DatabaseHelper.COLUMN_CART_USER_ID} = ?
             ORDER BY c.${DatabaseHelper.COLUMN_ID} DESC
-        """.trimIndent()
+            """.trimIndent()
 
+        Log.d("SQL_CART", query)
         val cursor = database.rawQuery(query, arrayOf(userId.toString()))
         cursor.use {
             while (it.moveToNext()) {
@@ -99,6 +101,9 @@ class CartRepository(context: Context) {
                     ),
                     packageQuantity = it.getDouble(
                         it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PRODUCT_PACKAGE_QUANTITY)
+                    ),
+                    weight = it.getDouble(
+                        it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PRODUCT_WEIGHT)
                     )
                 )
 
