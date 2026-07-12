@@ -186,6 +186,38 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         return total
     }
 
+    fun getAllCategories(): List<String> {
+
+        val categories = mutableListOf<String>()
+
+        categories.add("Semua")
+
+        val database = readableDatabase
+
+        val cursor = database.rawQuery(
+            """
+        SELECT DISTINCT $COLUMN_PRODUCT_CATEGORY
+        FROM $TABLE_PRODUCTS
+        ORDER BY $COLUMN_PRODUCT_CATEGORY
+        """.trimIndent(),
+            null
+        )
+
+        cursor.use {
+
+            while (it.moveToNext()) {
+
+                categories.add(
+                    it.getString(0)
+                )
+
+            }
+
+        }
+
+        return categories
+    }
+
     fun getTotalOrders(): Int {
         val db = readableDatabase
         val cursor = db.rawQuery(
